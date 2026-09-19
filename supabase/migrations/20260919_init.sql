@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   section_id UUID REFERENCES public.sections(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
-  slug TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
   description TEXT,
   specs JSONB NOT NULL DEFAULT '{}'::jsonb,
   video_type TEXT NOT NULL DEFAULT 'youtube' CHECK (video_type IN ('embed', 'upload', 'youtube', 'vimeo')),
@@ -122,9 +122,21 @@ CREATE TABLE IF NOT EXISTS public.products (
   storage_video_path TEXT,
   thumbnail_url TEXT,
   is_published BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc me text', now()),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
+
+-- Existing tables safety constraint update if slug was not unique
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'products_slug_key'
+  ) THEN
+    ALTER TABLE public.products ADD CONSTRAINT products_slug_key UNIQUE (slug);
+  END IF;
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END $$;
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
