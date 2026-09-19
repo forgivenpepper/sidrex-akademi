@@ -63,10 +63,13 @@ export async function registerAction(prevState: any, formData: FormData) {
 
   const supabase = await createClient();
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sidrex-akademi.vercel.app';
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: `${siteUrl}/auth/callback`,
       data: {
         full_name: fullName,
         occupation,
