@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sidrex Video Galeri & Ürün Vitrini",
-  description: "Modern, yüksek performanslı müşteri video galerisi ve ürün künye platformu.",
+  title: "Sidrex | Ürün & Video Kataloğu",
+  description: "Minimalist, modern Sidrex Müşteri Video Galeri & Ürün Künye Platformu.",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className="bg-[#090d16] text-gray-100 min-h-screen antialiased">
+      <body className="bg-[#f8fafc] text-[#0b2545] min-h-screen antialiased">
         {children}
       </body>
     </html>

@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #090d16;
-  --foreground: #f3f4f6;
+  --background: #f8fafc;
+  --foreground: #0b2545;
+  --sidrex-sage: #58b09c;
+  --sidrex-sage-dark: #449784;
+  --sidrex-navy: #0b2545;
+  --sidrex-mint-bg: #edf7f3;
+  --sidrex-mint-card: #f0fdf6;
 }
 
 body {
@@ -20,32 +25,53 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #edf7f3;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #a3d9ca;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #58b09c;
 }
 
-/* Glassmorphism utils */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Sidrex Design System Utilities */
+.sidrex-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-card {
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.25s ease-in-out;
+.sidrex-card:hover {
+  border-color: #58b09c;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -10px rgba(88, 176, 156, 0.25);
 }
 
-.glass-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px -10px rgba(0, 102, 255, 0.25);
+.sidrex-badge {
+  display: inline-flex;
+  items-align: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  border: 1px solid #d1eae1;
+  color: #0b2545;
+}
+
+.sidrex-btn-primary {
+  background-color: #58b09c;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 14px 0 rgba(88, 176, 156, 0.35);
+}
+
+.sidrex-btn-primary:hover {
+  background-color: #449784;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(88, 176, 156, 0.45);
 }

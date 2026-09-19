@@ -21,7 +21,6 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
 
   const handleSectionClick = (secId: string, title: string) => {
     setSelectedSectionId(secId);
-    // Track user click analytics
     logSectionClickAction(secId, title);
   };
 
@@ -68,46 +67,48 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
     .filter((sec) => sec.items.length > 0);
 
   const uncategorizedItems = filteredProducts.filter((p) => !p.section_id);
-
   const isDefaultView = selectedSectionId === 'all' && !searchQuery;
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-[#f8fafc] text-[#0b2545] flex flex-col">
+      {/* Header */}
       <Header
         profile={profile}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
 
+      {/* Hero & Category Tabs */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-        <div className="relative overflow-hidden rounded-3xl glass-panel p-8 md:p-12 border border-white/10 shadow-2xl bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-slate-950">
+        {/* Sidrex Mint Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl p-8 md:p-12 border border-[#d1eae1] shadow-md bg-gradient-to-r from-[#edf7f3] via-[#e2f3ec] to-[#edf7f3]">
           <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#d1eae1] text-[#58b09c] text-xs font-extrabold shadow-sm">
               <Sparkles className="w-4 h-4" />
               <span>Sidrex Premium Galeri</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black text-[#0b2545] tracking-tight leading-tight">
               Endüstriyel Ürün & Video Kataloğu
             </h1>
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+            <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
               Teknik detaylar, yüksek çözünürlüklü tanıtım videoları ve doğrudan künye kodlu iletişim imkanı ile ürünlerimizi keşfedin.
             </p>
           </div>
 
-          <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-12 translate-y-12">
-            <Package className="w-96 h-96 text-blue-500" />
+          <div className="absolute right-0 bottom-0 opacity-15 pointer-events-none transform translate-x-8 translate-y-8">
+            <Package className="w-96 h-96 text-[#58b09c]" />
           </div>
         </div>
 
         {/* Section Filter Pills */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex items-center space-x-2.5 overflow-x-auto pb-2 scrollbar-none">
           <button
             type="button"
             onClick={() => handleSectionClick('all', 'Tüm Kategoriler')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+            className={`px-6 py-3 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
               selectedSectionId === 'all'
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                : 'bg-slate-900 border border-slate-800 text-gray-400 hover:text-white hover:border-slate-700'
+                ? 'bg-[#58b09c] text-white shadow-md shadow-[#58b09c]/30'
+                : 'bg-white border border-slate-200 text-slate-700 hover:border-[#58b09c] hover:text-[#58b09c]'
             }`}
           >
             Tüm Kategoriler ({products.length})
@@ -118,10 +119,10 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
               key={sec.id}
               type="button"
               onClick={() => handleSectionClick(sec.id, sec.title)}
-              className={`px-5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-6 py-3 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
                 selectedSectionId === sec.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                  : 'bg-slate-900 border border-slate-800 text-gray-400 hover:text-white hover:border-slate-700'
+                  ? 'bg-[#58b09c] text-white shadow-md shadow-[#58b09c]/30'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:border-[#58b09c] hover:text-[#58b09c]'
               }`}
             >
               {sec.title}
@@ -129,16 +130,17 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
           ))}
         </div>
 
+        {/* SECTION BAZLI VİTRİN */}
         {isDefaultView ? (
           <div className="space-y-12">
             {sectionsWithProducts.map((sec) => (
-              <section key={sec.id} className="space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <section key={sec.id} className="space-y-5">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-6 rounded-full bg-blue-500" />
-                    <h2 className="text-xl font-bold text-white tracking-tight">{sec.title}</h2>
+                    <div className="w-2.5 h-6 rounded-full bg-[#58b09c]" />
+                    <h2 className="text-xl font-extrabold text-[#0b2545] tracking-tight">{sec.title}</h2>
                   </div>
-                  <span className="text-xs text-gray-400 font-medium">
+                  <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-3 py-1 rounded-full">
                     {sec.items.length} Ürün
                   </span>
                 </div>
@@ -156,11 +158,11 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
             ))}
 
             {uncategorizedItems.length > 0 ? (
-              <section className="space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <section className="space-y-5">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-6 rounded-full bg-indigo-500" />
-                    <h2 className="text-xl font-bold text-white tracking-tight">Diğer Ürünler</h2>
+                    <div className="w-2.5 h-6 rounded-full bg-slate-400" />
+                    <h2 className="text-xl font-extrabold text-[#0b2545] tracking-tight">Diğer Ürünler</h2>
                   </div>
                 </div>
 
@@ -177,9 +179,9 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
             ) : null}
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h2 className="text-lg font-bold text-white">
+          <div className="space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h2 className="text-lg font-bold text-[#0b2545]">
                 Filtrelenmiş Sonuçlar ({filteredProducts.length})
               </h2>
             </div>
@@ -195,10 +197,10 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
                 ))}
               </div>
             ) : (
-              <div className="glass-panel p-12 rounded-3xl text-center text-gray-400 space-y-3">
-                <Package className="w-12 h-12 mx-auto text-gray-600" />
-                <p className="text-base font-semibold text-white">Aramanıza Uygun Ürün Bulunamadı</p>
-                <p className="text-xs text-gray-400">
+              <div className="bg-white p-12 rounded-3xl text-center text-slate-500 border border-slate-200 space-y-3 shadow-sm">
+                <Package className="w-12 h-12 mx-auto text-[#58b09c]" />
+                <p className="text-base font-bold text-[#0b2545]">Aramanıza Uygun Ürün Bulunamadı</p>
+                <p className="text-xs text-slate-500">
                   Farklı bir kelime ile aramayı deneyebilir veya tüm kategorileri listeleyebilirsiniz.
                 </p>
               </div>
@@ -207,6 +209,7 @@ export default function CustomerShowcase({ products, sections, profile }: Custom
         )}
       </main>
 
+      {/* Video Modal Popup */}
       <VideoModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}

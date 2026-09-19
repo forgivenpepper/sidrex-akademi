@@ -1,7 +1,7 @@
 'use client';
 
 import { Product } from '@/lib/types/database';
-import { X, Mail, Video, ShieldCheck, CheckCircle, Info } from 'lucide-react';
+import { X, Mail, Video, Info } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface VideoModalProps {
@@ -20,7 +20,6 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
 
   if (!product) return null;
 
-  // Extract Model Code or ID for pre-filled email
   const modelCode = product.specs ? product.specs['Model Kodu'] || product.slug : product.slug;
   const emailSubject = encodeURIComponent(`Ürün Bilgi Talebi: ${product.title} (Kod: ${modelCode})`);
   const emailBody = encodeURIComponent(
@@ -28,7 +27,6 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   );
   const mailtoLink = `mailto:info@sidrex.com?subject=${emailSubject}&body=${emailBody}`;
 
-  // Helper to resolve video embed source
   const renderVideoPlayer = () => {
     if (product.video_type === 'youtube' && product.video_url) {
       let embedUrl = product.video_url;
@@ -78,7 +76,6 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     }
 
     if (product.video_type === 'embed' && product.video_url) {
-      // If full iframe string provided
       if (product.video_url.includes('<iframe')) {
         return (
           <div
@@ -98,9 +95,9 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     }
 
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 rounded-2xl text-gray-400 p-8 text-center">
-        <Video className="w-12 h-12 mb-3 text-gray-600" />
-        <p>Bu ürün için önizleme videosu bulunmamaktadır.</p>
+      <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
+        <Video className="w-12 h-12 mb-3 opacity-80" />
+        <p className="font-semibold text-slate-600 text-sm">Bu ürün için önizleme videosu bulunmamaktadır.</p>
       </div>
     );
   };
@@ -108,20 +105,20 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   const specsList = product.specs ? Object.entries(product.specs) : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-5xl bg-[#0f172a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md overflow-y-auto animate-fade-in">
+      <div className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-slate-900/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-[#edf7f3]/50">
           <div className="flex items-center space-x-3">
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 border border-blue-500/20 text-blue-400">
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-white border border-[#d1eae1] text-[#58b09c] shadow-sm">
               {product.sections?.title || 'Ürün Galerisi'}
             </span>
-            <h2 className="text-lg font-bold text-white truncate max-w-md">{product.title}</h2>
+            <h2 className="text-lg font-extrabold text-[#0b2545] truncate max-w-md">{product.title}</h2>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all"
+            className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-[#0b2545] transition-all"
           >
             <X className="w-5 h-5" />
           </button>
@@ -130,59 +127,59 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto space-y-6 flex-1">
           {/* Video Container */}
-          <div className="relative w-full aspect-video rounded-2xl bg-black shadow-2xl border border-white/10 overflow-hidden">
+          <div className="relative w-full aspect-video rounded-2xl bg-slate-900 shadow-lg border border-slate-200 overflow-hidden">
             {renderVideoPlayer()}
           </div>
 
           {/* Details & Specs Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
             {/* Description & Contact CTA */}
             <div className="lg:col-span-2 space-y-4">
               <div>
-                <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
                   Ürün Detayı ve Açıklaması
                 </h3>
-                <p className="text-sm text-gray-300 leading-relaxed bg-slate-900/50 p-4 rounded-xl border border-white/5">
+                <p className="text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   {product.description || 'Bu ürün hakkında henüz detaylı açıklama eklenmedi.'}
                 </p>
               </div>
 
               {/* Pre-filled Email Contact Button */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-slate-900 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="p-5 rounded-3xl bg-[#edf7f3] border border-[#d1eae1] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
                 <div>
-                  <h4 className="font-semibold text-white text-sm">Ürün Hakkında Detaylı Bilgi Alın</h4>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    Otomatik ürün adı ve künye kodu içeren e-posta ile uzman ekibimizle iletişime geçin.
+                  <h4 className="font-bold text-[#0b2545] text-sm">Ürün Hakkında Bilgi Alın</h4>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Ürün adı ve künye kodu otomatik doldurulmuş e-posta ile ekibimizle iletişime geçin.
                   </p>
                 </div>
 
                 <a
                   href={mailtoLink}
-                  className="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 flex-shrink-0"
+                  className="w-full sm:w-auto px-6 py-3 bg-[#58b09c] hover:bg-[#449784] text-white font-bold text-xs rounded-2xl shadow-md shadow-[#58b09c]/30 transition-all flex items-center justify-center gap-2 flex-shrink-0"
                 >
                   <Mail className="w-4 h-4" />
-                  <span>İletişime Geç (Pre-filled Mail)</span>
+                  <span>Sepete Ekle / İletişim</span>
                 </a>
               </div>
             </div>
 
             {/* Technical Specs Table / Card */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider flex items-center gap-2">
-                <Info className="w-4 h-4 text-blue-400" />
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Info className="w-4 h-4 text-[#58b09c]" />
                 Teknik Künye
               </h3>
 
-              <div className="bg-slate-900/80 border border-white/10 rounded-2xl p-4 divide-y divide-white/5 space-y-2">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 divide-y divide-slate-200/80 space-y-2">
                 {specsList.length > 0 ? (
                   specsList.map(([key, value]) => (
                     <div key={key} className="pt-2 flex justify-between items-center text-xs">
-                      <span className="text-gray-400 font-medium">{key}</span>
-                      <span className="text-white font-semibold text-right pl-2">{value}</span>
+                      <span className="text-slate-500 font-medium">{key}</span>
+                      <span className="text-[#0b2545] font-bold text-right pl-2">{value}</span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-gray-500 italic text-center py-2">
+                  <p className="text-xs text-slate-400 italic text-center py-2">
                     Teknik künye bilgisi girilmedi.
                   </p>
                 )}
