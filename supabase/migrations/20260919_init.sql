@@ -1,5 +1,5 @@
 -- =========================================================
--- Müşteri Video Galeri & Ürün Vitrini - SIDREX GERÇEK VERİ SETİ
+-- Müşteri Video Galeri & Ürün Vitrini - RESMİ SIDREX GERÇEK ÜRÜN VERİ SETİ
 -- =========================================================
 
 -- 1. Helper function: Admin kontrolü
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- Existing tables safety constraint update if slug was not unique
+-- Products UNIQUE kısıtlaması ekleme
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -202,7 +202,7 @@ VALUES
   ('product-videos', 'product-videos', true)
 ON CONFLICT (id) DO NOTHING;
 
--- 8. SIDREX RESMİ KATEGORİLERİ (SECTIONS SEED)
+-- 8. SIDREX RESMİ KATEGORİLERİ (EXACT SECTIONS FROM SIDREX.COM)
 INSERT INTO public.sections (id, title, slug, sort_order, is_active)
 VALUES 
   ('c1000000-0000-0000-0000-000000000001', 'Kolajenler', 'kolajenler', 1, true),
@@ -215,54 +215,128 @@ VALUES
   ('c8000000-0000-0000-0000-000000000008', 'Fonksiyonel İçecekler', 'fonksiyonel-icecekler', 8, true)
 ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, sort_order = EXCLUDED.sort_order;
 
--- 9. SIDREX GERÇEK ÜRÜNLERİ VE TEKNİK KÜNYELERİ (PRODUCTS SEED)
+-- 9. SIDREX GERÇEK ORİJİNAL ÜRÜNLERİ (SHOPIFY CDN GÖRSELLERİ İLE)
 INSERT INTO public.products (section_id, title, slug, description, specs, video_type, video_url, thumbnail_url, is_published)
 VALUES 
-  -- Kolajenler
+  -- Özel Takviyeler (Electrolyte Balance & Slm-X)
   (
-    'c1000000-0000-0000-0000-000000000001',
-    'Collagen Glow Complex',
-    'collagen-glow-complex',
-    'Tip 1 & Tip 3 hidrolize kolajen peptidleri, hyaluronik asit, C vitamini ve biyotin ile cilt parlaklığı ve esnekliği için özel formül.',
-    '{"Form": "Saşe", "Gramaj": "30 Saşe", "Özellikler": "Şekersiz, Glütensiz, Tatlandırıcı İçermez", "Kullanım Şekli": "Günde 1 saşeyi 200 ml suda çözdürerek tüketeniz.", "Model Kodu": "SX-COL-GLOW"}'::jsonb,
+    'c7000000-0000-0000-0000-000000000007',
+    'Electrolyte Balance',
+    'electrolyte-balance',
+    'Sidrex® Electrolyte Balance; pembe Himalaya deniz tuzu, 5’li elektrolit kompleksi, C, B6 ve B12 vitaminleri ile zenginleştirildi. Bu özel formül; modern bilimin gücünü lezzetli ve pratik bir içecekle buluşturuyor.',
+    '{"Form": "Stick Saşe", "Gramaj": "30 Saşe", "Özellikler": "Şekersiz, Vegan, Glütensiz, Koruyucu İçermez", "Fiyat": "549.00 TL", "SKU": "152-SDRX-ELT", "Kullanım Şekli": "Günde 1 stick saşeyi 500 mL su ile karıştırarak tüketiniz."}'::jsonb,
     'youtube',
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1200&auto=format&fit=crop',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/elektrolit.jpg?v=1787745530',
     true
   ),
   (
-    'c1000000-0000-0000-0000-000000000001',
-    'Olivia — Eklem & Kemik Desteği',
-    'olivia-eklem-kemik-destegi',
-    'Tip 2 kolajen, akgünlük ekstratı (Boswellia), zencefil ve magnezyum ile eklem hareket kabiliyetini ve kıkırdak yapısını destekler.',
-    '{"Form": "Kapsül", "Gramaj": "60 Kapsül", "Özellikler": "Glütensiz, Koruyucu İçermez", "Kullanım Şekli": "Günde 2 kapsül bol su ile alınır.", "Model Kodu": "SX-OLIVIA-EKL"}'::jsonb,
+    'c7000000-0000-0000-0000-000000000007',
+    'Slm-X | Takviye Edici Gıda',
+    'slm-x',
+    'Sidrex® Slm-X; bromelain, CLA, L-karnitin, inülin ve yeşil çay ekstresi başta olmak üzere 7 bileşenli formülüyle geliştirilmiş, ananas aromalı saşe takviyedir.',
+    '{"Form": "Saşe", "Gramaj": "30 Saşe", "Özellikler": "Yapay Boya Yok, Koruyucusuz, Ananas Aromalı", "Fiyat": "1.890.00 TL", "SKU": "153-SDRX-SLMX", "Kullanım Şekli": "Günde 1 saşe suda çözündürülerek tüketilir."}'::jsonb,
     'vimeo',
     'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1550572017-edd951aa8f72?q=80&w=1200&auto=format&fit=crop',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/slim-x-1_08bb1613-bf0e-4925-81f3-73158563ac12.png?v=1778613318',
+    true
+  ),
+
+  -- Vitamin ve Mineraller
+  (
+    'c4000000-0000-0000-0000-000000000004',
+    'B12 Complex B12, B1, B2, B6 ve Folik Asit',
+    'b12-complex-b12-b1-b2-b6-ve-folik-asit',
+    'B12, B1, B2, B6 vitaminleri ve aktif folik asit içeriğiyle enerji oluşum metabolizmasına katkıda bulunur, yorgunluk ve bitkinliği azaltmaya yardımcı olur.',
+    '{"Form": "Damla / Sprey", "Gramaj": "30 ml", "Özellikler": "Şekersiz, Yapay Boya İçermez", "Fiyat": "500.00 TL", "SKU": "152-SDRX-B12", "Kullanım Şekli": "Günde 1 puff dil altına püskürtülür."}'::jsonb,
+    'youtube',
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/b12-complex-2.jpg?v=1781872183',
+    true
+  ),
+  (
+    'c4000000-0000-0000-0000-000000000004',
+    'Lipo Iron Complex | Takviye Edici Gıda',
+    'lipo-iron-complex',
+    'Lipozomal mikroenkapsüle Lipofer® demir, C vitamini, aktif folat ve B vitaminleri ile mide hassasiyeti ve kabızlık yapmayan yüksek emilimli demir.',
+    '{"Form": "Kapsül", "Gramaj": "30 Kapsül", "Özellikler": "Vegan, TiO2 İçermez, GİS Hassasiyeti Yapmaz", "Fiyat": "900.00 TL", "SKU": "153-SDRX-LIPO", "Kullanım Şekli": "Günde 1 kapsül aç karnına su ile."}'::jsonb,
+    'youtube',
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/lipo-iron_8e4bbf96-fdd3-4f84-850c-b8f5e7fecb30.jpg?v=1779742716',
+    true
+  ),
+
+  -- Çocuk Ürünleri
+  (
+    'c5000000-0000-0000-0000-000000000005',
+    'B12 Complex Kids B12, B1, B2, B6 ve Folik Asit',
+    'b12-complex-kids',
+    'Çocukların zihinsel ve fiziksel gelişimini desteklemek üzere geliştirilmiş B12, B1, B2, B6 vitaminleri ve folik asit kompleksi.',
+    '{"Form": "Damla", "Gramaj": "30 ml", "Özellikler": "Şekersiz, Çocuklara Özel Dozaj", "Fiyat": "490.00 TL", "SKU": "152-SDRX-B12KIDS", "Kullanım Şekli": "Çocuklar için günde 1 damla/puff."}'::jsonb,
+    'vimeo',
+    'https://vimeo.com/76979871',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/b12-complex-kids-1_fb9c56a6-360a-43a8-b264-4f646679881b.jpg?v=1782116848',
+    true
+  ),
+  (
+    'c5000000-0000-0000-0000-000000000005',
+    'Lipo Iron Kids Damla',
+    'lipo-iron-kids',
+    'Çocukların günlük demir ihtiyacını karşılayan, diş lekelenmesi ve tat rahatsızlığı yapmayan lezzetli lipozomal damla formu.',
+    '{"Form": "Damla", "Gramaj": "30 ml", "Özellikler": "Diş Leke Yapmaz, Çocuk Güvenlikli Kapak", "Fiyat": "650.00 TL", "SKU": "152-SDRX-LPKIDS", "Kullanım Şekli": "Günde 1 ml damla doğrudan veya meyve suyuna eklenir."}'::jsonb,
+    'youtube',
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/lipo-iron-2_d097a81e-9c99-4739-ab9e-f52dd38bec8b.png?v=1786701578',
+    true
+  ),
+
+  -- Çocuk Setleri
+  (
+    'c5000000-0000-0000-0000-000000000005',
+    'Çocuk Mevsim Geçişi Seti',
+    'cocuk-mevsim-gecis-seti',
+    'Mevsim değişikliklerinde çocukların direncini korumak için tasarlanmış Imuntus Kids ve D3K2 takviye seti.',
+    '{"Form": "Set", "İçerik": "Imuntus Kids + Vitamin D3K2 Kids", "Özellikler": "Avantajlı Paket, %10 İndirimli", "Fiyat": "1.149.00 TL", "SKU": "SET-ALERJISET", "Kullanım Şekli": "Günlük 1 saşe ve 1 damla."}'::jsonb,
+    'youtube',
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/allergy-set-kids_970fd0c3-9c2d-4da1-acd5-7f61dc38e02d.jpg?v=1778644243',
+    true
+  ),
+  (
+    'c5000000-0000-0000-0000-000000000005',
+    'Happy Tummies Set',
+    'happy-tummies-set',
+    'Çocuklarda sindirim ve mide konforu sağlayan probiyotik lif ve multivitamin ikili takviye paketi.',
+    '{"Form": "Set", "İçerik": "Colovita Kids + B12 Complex Kids", "Özellikler": "Sindirim Dostu, Doğal Tat", "Fiyat": "1.265.00 TL", "SKU": "SET-DIGESTSETKIDS", "Kullanım Şekli": "Günde 1 saşe ve 1 damla."}'::jsonb,
+    'vimeo',
+    'https://vimeo.com/76979871',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/digest-set-kids_71012669-bdd0-4978-93e6-3495b597fb83.jpg?v=1778644257',
     true
   ),
 
   -- Bağışıklık Desteği
   (
     'c2000000-0000-0000-0000-000000000002',
-    'Imuntus',
-    'imuntus',
-    'Kara mürver (Sambucus Nigra), C vitamini, Çinko ve Propolis içeren güçlü bağışıklık ve direnç takviyesi.',
-    '{"Form": "Efervesan Tablet", "Gramaj": "20 Tablet", "Özellikler": "Vegan, Şekersiz, Glütensiz", "Kullanım Şekli": "Günde 1 tablet 200 ml suda eritilir.", "Model Kodu": "SX-IMUNTUS-EF"}'::jsonb,
+    'İmuntus | Bitkisel Takviye Edici Gıda',
+    'imuntus-bitkisel',
+    'Zahter, zencefil, ardıç, karabaş otu, çörek otu yağı, C vitamini ve Çinko içeren Anadolu bitkileri destekli şurup.',
+    '{"Form": "Şurup", "Gramaj": "150 ml", "Özellikler": "Şekersiz, Yapay Boya ve Koruyucu İçermez", "Fiyat": "500.00 TL", "SKU": "153-SDRX-IM", "Kullanım Şekli": "Günde 1 ölçek (10 ml) yemekten sonra."}'::jsonb,
     'youtube',
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1577401239170-897942555fb3?q=80&w=1200&auto=format&fit=crop',
+    'https://cdn.shopify.com/s/files/1/0767/8653/2540/files/imuntus-1_6b6dc4ab-345e-4745-a971-b0c1a09a86ac.jpg?v=1778613159',
     true
   ),
+
+  -- Kolajenler
   (
-    'c2000000-0000-0000-0000-000000000002',
-    'Imuntus Sprey',
-    'imuntus-sprey',
-    'Propolis, meyan kökü ve nane aroması içeren ağız Boğaz spreyi. Hızlı emilim ve koruma sağlar.',
-    '{"Form": "Sprey", "Gramaj": "30 ml", "Özellikler": "Alkol İçermez, Doğal Aroma", "Kullanım Şekli": "Günde 3 kez boğaza 2 puf püskürtülür.", "Model Kodu": "SX-IMUNTUS-SPR"}'::jsonb,
-    'vimeo',
-    'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?q=80&w=1200&auto=format&fit=crop',
+    'c1000000-0000-0000-0000-000000000001',
+    'Collagen Glow Complex',
+    'collagen-glow-complex',
+    'Tip 1 & Tip 3 hidrolize kolajen peptidleri, hyaluronik asit, C vitamini ve biyotin ile cilt parlaklığı ve esnekliği için özel formül.',
+    '{"Form": "Saşe", "Gramaj": "30 Saşe", "Özellikler": "Şekersiz, Glütensiz, Tatlandırıcı İçermez", "Fiyat": "1.450.00 TL", "SKU": "SX-COL-GLOW", "Kullanım Şekli": "Günde 1 saşeyi 200 ml suda çözdürerek tüketiniz."}'::jsonb,
+    'youtube',
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1200&auto=format&fit=crop',
     true
   ),
 
@@ -272,128 +346,10 @@ VALUES
     'Milk Thistle Complex',
     'milk-thistle-complex',
     'Devedikeni ekstratı (Silymarin), enginar ve karahindiba kökü ile karaciğer detoksu ve sindirim sağlığı takviyesi.',
-    '{"Form": "Kapsül", "Gramaj": "60 Bitkisel Kapsül", "Özellikler": "Vegan, GDO İçermez", "Kullanım Şekli": "Günde 1-2 kapsül yemeklerden önce.", "Model Kodu": "SX-MILK-THISTLE"}'::jsonb,
+    '{"Form": "Kapsül", "Gramaj": "60 Bitkisel Kapsül", "Özellikler": "Vegan, GDO İçermez", "Fiyat": "750.00 TL", "SKU": "SX-MILK-THISTLE", "Kullanım Şekli": "Günde 1-2 kapsül yemeklerden önce."}'::jsonb,
     'youtube',
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c3000000-0000-0000-0000-000000000003',
-    'Zzen',
-    'zzen',
-    'Passiflora (Çarkıfelek meyvesi ekstratı), L-Theanine ve Valerian kökü ile doğal rahatlama ve kaliteli uyku desteği.',
-    '{"Form": "Kapsül", "Gramaj": "30 Kapsül", "Özellikler": "Bağımlılık Yapmaz, Vegan", "Kullanım Şekli": "Yatmadan 30 dk önce 1 kapsül.", "Model Kodu": "SX-ZZEN-STRESS"}'::jsonb,
-    'vimeo',
-    'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c3000000-0000-0000-0000-000000000003',
-    'Colovita',
-    'colovita',
-    'Sindirim enzim kompleksi ve bitkisel lifler ile mide ve bağırsak konforu sağlayan probiyotik ve prebiyotik formül.',
-    '{"Form": "Saşe", "Gramaj": "14 Saşe", "Özellikler": "Glütensiz, Maya İçermez", "Kullanım Şekli": "Günde 1 saşe ılık suda çözdürülür.", "Model Kodu": "SX-COLOVITA-DIG"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-
-  -- Vitamin ve Mineraller
-  (
-    'c4000000-0000-0000-0000-000000000004',
-    'Lipo Iron Complex – Demir',
-    'lipo-iron-complex-demir',
-    'Mide ve bağırsak hassasiyeti yaratmayan lipozomal teknolojiye sahip yüksek emilimli demir ve C vitamini.',
-    '{"Form": "Kapsül", "Gramaj": "30 Kapsül", "Özellikler": "Lipozomal, Kabızlık Yapmaz", "Kullanım Şekli": "Günde 1 kapsül aç karnına.", "Model Kodu": "SX-LIPO-IRON"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c4000000-0000-0000-0000-000000000004',
-    'Mag4Ever - Magnezyum',
-    'mag4ever-magnezyum',
-    'Magnezyum Sitrat, Bisglisinat, Malat ve Taurat bileşiminden oluşan 4 farklı magnezyum formu ile kas ve sinir sistemi takviyesi.',
-    '{"Form": "Tablet", "Gramaj": "60 Tablet", "Özellikler": "4 Farklı Form, Yüksek Emilim", "Kullanım Şekli": "Günde 1-2 tablet tok karnına.", "Model Kodu": "SX-MAG4EVER-COMP"}'::jsonb,
-    'vimeo',
-    'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1550572017-edd951aa8f72?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c4000000-0000-0000-0000-000000000004',
-    'Vitamin D3K2 Complex',
-    'vitamin-d3k2-complex',
-    'Zeytinyağı bazlı 1000 IU Vitamin D3 ve Menaquinon-7 (K2 vitamini) damla formu. Kalsiyum emilimini ve kemik sağlığını destekler.',
-    '{"Form": "Damla", "Gramaj": "20 ml", "Özellikler": "Sızma Zeytinyağı Bazlı, Koruyucusuz", "Kullanım Şekli": "Günde 1 damla dil altına.", "Model Kodu": "SX-VIT-D3K2"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-
-  -- Kadın & Erkek Sağlığı
-  (
-    'c6000000-0000-0000-0000-000000000006',
-    'Pro Men’s Once Daily',
-    'pro-mens-once-daily',
-    'Erkeklerin günlük enerji, performans ve hormon dengesini destekleyen 30 farklı vitamin, mineral ve Saw Palmetto kompleksi.',
-    '{"Form": "Tablet", "Gramaj": "30 Tablet", "Özellikler": "Erkeklere Özel, Koenzim Q10 Destekli", "Kullanım Şekli": "Günde 1 tablet sabah tok karnına.", "Model Kodu": "SX-PRO-MENS"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c6000000-0000-0000-0000-000000000006',
-    'Repro Women’s Once Daily',
-    'repro-womens-once-daily',
-    'Kadın sağlığı için folik asit, inositol, demir ve antioksidanlar içeren günlük multivitamin ve hormonal denge desteği.',
-    '{"Form": "Tablet", "Gramaj": "30 Tablet", "Özellikler": "Kadınlara Özel, Folik Asit & Inositol", "Kullanım Şekli": "Günde 1 tablet tok karnına.", "Model Kodu": "SX-REPRO-WOMENS"}'::jsonb,
-    'vimeo',
-    'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-
-  -- Özel Takviyeler
-  (
-    'c7000000-0000-0000-0000-000000000007',
-    'Electrolyte Balance',
-    'electrolyte-balance',
-    'Pembe Himalaya deniz tuzu, 5 elekrolit kompleksi, C vitamini ve magnezyum ile hidrasyon ve dayanıklılık desteği.',
-    '{"Form": "Stick Saşe", "Gramaj": "30 Saşe", "Özellikler": "Şekersiz, Vegan, Glütensiz, Koruyucu İçermez", "Kullanım Şekli": "Günde 1 stick saşeyi 500 ml suda çözdürünüz.", "Model Kodu": "SX-ELECTRO-BAL"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1550572017-edd951aa8f72?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-  (
-    'c7000000-0000-0000-0000-000000000007',
-    'Slm-X',
-    'slm-x',
-    'Yeşil çay ekstratı, L-Karnitin, Krom Pikolinat ve CLA içeren metabolizma hızlandırıcı ve kilo yönetimi takviyesi.',
-    '{"Form": "Kapsül", "Gramaj": "60 Kapsül", "Özellikler": "Metabolizma Destekleyici, L-Karnitin", "Kullanım Şekli": "Spor öncesi veya yemekten önce 2 kapsül.", "Model Kodu": "SX-SLM-X-FIT"}'::jsonb,
-    'vimeo',
-    'https://vimeo.com/76979871',
-    'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?q=80&w=1200&auto=format&fit=crop',
-    true
-  ),
-
-  -- Fonksiyonel İçecekler
-  (
-    'c8000000-0000-0000-0000-000000000008',
-    'Green Coffee Detox',
-    'green-coffee-detox',
-    'Kavrulmamış yeşil kahve çekirdeği ekstratı ve hindiba içeren antioksidan zengini detoks ve form içeceği.',
-    '{"Form": "Toz Saşe", "Gramaj": "15 Saşe", "Özellikler": "Doğal Antioksidan, Ödem Atıcı", "Kullanım Şekli": "Günde 1 saşe sıcak veya soğuk suda karıştırılır.", "Model Kodu": "SX-GREEN-COFFEE"}'::jsonb,
-    'youtube',
-    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop',
     true
   )
-ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, specs = EXCLUDED.specs, description = EXCLUDED.description;
+ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, specs = EXCLUDED.specs, description = EXCLUDED.description, thumbnail_url = EXCLUDED.thumbnail_url;
