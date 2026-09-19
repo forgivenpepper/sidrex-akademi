@@ -3,7 +3,7 @@
 import { registerAction } from '@/app/actions/auth';
 import { useFormStatus, useFormState } from 'react-dom';
 import Link from 'next/link';
-import { Lock, Mail, User, Briefcase, MapPin, FileText, Video, ArrowRight, Loader2 } from 'lucide-react';
+import { Lock, Mail, User, Briefcase, MapPin, FileText, ArrowRight, Loader2 } from 'lucide-react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -32,19 +32,27 @@ export default function RegisterPage() {
   const [state, formAction] = useFormState(registerAction, null);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#f8fafc]">
-      <div className="w-full max-w-xl my-8">
-        {/* Logo / Brand Header */}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#edf7f3] via-[#f8fafc] to-[#e2f3ec] relative overflow-hidden">
+      {/* Decorative Gradient Glow Orbs */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#58b09c]/15 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#58b09c]/20 blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-xl my-8 relative z-10">
+        {/* Logo Header with Official Sidrex Logo */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-[#edf7f3] border border-[#d1eae1] text-[#58b09c] mb-3 shadow-sm">
-            <Video className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center px-6 py-3.5 rounded-3xl bg-white/90 border border-[#d1eae1] mb-3 shadow-md backdrop-blur-md">
+            <img
+              src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
+              alt="Sidrex Akademi Logo"
+              className="h-9 w-auto object-contain"
+            />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Galeri</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Akademi</h1>
           <p className="text-slate-500 text-xs font-semibold mt-1">Müşteri Kayıt Formu</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80 relative overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-slate-200/90 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#58b09c] via-[#449784] to-[#0b2545]" />
 
           <h2 className="text-lg font-bold text-[#0b2545] mb-6">Müşteri Profil Bilgilerinizi Girin</h2>
@@ -159,7 +167,7 @@ export default function RegisterPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-500 font-medium">
               Zaten hesabınız var mı?{' '}
-              <Link href="/register" className="text-[#58b09c] font-bold hover:underline transition-colors">
+              <Link href="/login" className="text-[#58b09c] font-bold hover:underline transition-colors">
                 Giriş Yapın
               </Link>
             </p>

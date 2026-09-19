@@ -3,7 +3,7 @@
 import { Profile } from '@/lib/types/database';
 import { logoutAction } from '@/app/actions/auth';
 import Link from 'next/link';
-import { Video, Shield, LogOut, Mail, Search } from 'lucide-react';
+import { Shield, LogOut, Mail, Search } from 'lucide-react';
 
 interface HeaderProps {
   profile: Profile | null;
@@ -13,20 +13,24 @@ interface HeaderProps {
 
 export default function Header({ profile, searchQuery, onSearchChange }: HeaderProps) {
   const generalMailto = `mailto:info@sidrex.com?subject=${encodeURIComponent(
-    'Sidrex Platformu Genel Bilgi Talebi'
-  )}&body=${encodeURIComponent('Merhaba Sidrex Ekibi,\n\nÜrün galeriniz hakkında detaylı görüşmek istiyorum.')}`;
+    'Sidrex Akademi Genel Bilgi Talebi'
+  )}&body=${encodeURIComponent('Merhaba Sidrex Akademi Ekibi,\n\nÜrün kataloğunuz ve akademi videolarınız hakkında detaylı görüşmek istiyorum.')}`;
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-[#edf7f3] border border-[#d1eae1] text-[#58b09c] flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
-            <Video className="w-5 h-5" />
+          <div className="p-2 rounded-2xl bg-[#edf7f3] border border-[#d1eae1] group-hover:scale-105 transition-transform shadow-sm flex items-center justify-center">
+            <img
+              src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
+              alt="Sidrex Akademi"
+              className="h-7 w-auto object-contain"
+            />
           </div>
           <div>
             <span className="font-extrabold text-xl tracking-tight text-[#0b2545] group-hover:text-[#58b09c] transition-colors">
-              Sidrex <span className="text-[#58b09c] font-normal">Galeri</span>
+              Sidrex <span className="text-[#58b09c] font-semibold">Akademi</span>
             </span>
             <span className="hidden sm:block text-[10px] text-slate-500 uppercase tracking-widest font-medium">
               Premium Ürün & Video Kataloğu
@@ -42,7 +46,7 @@ export default function Header({ profile, searchQuery, onSearchChange }: HeaderP
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Ürün adı veya künye (ör. CNC, 15 kW) ile ara..."
+              placeholder="Ürün adı veya künye (ör. Kolajen, Magnezyum) ile ara..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-[#0b2545] text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#58b09c] focus:border-transparent transition-all shadow-inner"
             />
           </div>

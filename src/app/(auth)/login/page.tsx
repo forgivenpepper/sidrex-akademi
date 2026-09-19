@@ -3,7 +3,7 @@
 import { loginAction } from '@/app/actions/auth';
 import { useFormStatus, useFormState } from 'react-dom';
 import Link from 'next/link';
-import { Lock, Mail, Video, ArrowRight, Loader2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -32,19 +32,27 @@ export default function LoginPage() {
   const [state, formAction] = useFormState(loginAction, null);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#f8fafc]">
-      <div className="w-full max-w-md">
-        {/* Logo / Brand Header */}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#edf7f3] via-[#f8fafc] to-[#e2f3ec] relative overflow-hidden">
+      {/* Decorative Gradient Glow Orbs */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#58b09c]/15 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#58b09c]/20 blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo Header with Official Sidrex Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-[#edf7f3] border border-[#d1eae1] text-[#58b09c] mb-4 shadow-sm">
-            <Video className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center px-6 py-4 rounded-3xl bg-white/90 border border-[#d1eae1] mb-4 shadow-md backdrop-blur-md">
+            <img
+              src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
+              alt="Sidrex Akademi Logo"
+              className="h-10 w-auto object-contain"
+            />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Galeri</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Akademi</h1>
           <p className="text-slate-500 text-xs font-semibold mt-1">Müşteri Video Galeri & Ürün Vitrini Platformu</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80 relative overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-slate-200/90 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#58b09c] via-[#449784] to-[#0b2545]" />
 
           <h2 className="text-lg font-bold text-[#0b2545] mb-6">Hesabınıza Giriş Yapın</h2>

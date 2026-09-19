@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sidrex | Ürün & Video Kataloğu",
-  description: "Minimalist, modern Sidrex Müşteri Video Galeri & Ürün Künye Platformu.",
+  title: "Sidrex Akademi | Ürün & Video Kataloğu",
+  description: "Minimalist, modern Sidrex Akademi Müşteri Video Galeri & Ürün Künye Platformu.",
 };
 
 export default function RootLayout({
