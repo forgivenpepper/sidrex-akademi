@@ -4,6 +4,7 @@ import { loginAction } from '@/app/actions/auth';
 import { useFormStatus, useFormState } from 'react-dom';
 import Link from 'next/link';
 import { Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { FloatingWireframeCapsules } from '@/components/WireframeCapsules';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -33,6 +34,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#edf7f3] via-[#f8fafc] to-[#e2f3ec] relative overflow-hidden">
+      {/* 3D Wireframe Rotating Capsules */}
+      <FloatingWireframeCapsules />
+
       {/* Decorative Gradient Glow Orbs */}
       <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#58b09c]/15 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#58b09c]/20 blur-3xl pointer-events-none" />

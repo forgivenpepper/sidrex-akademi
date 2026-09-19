@@ -75,3 +75,65 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px 0 rgba(88, 176, 156, 0.45);
 }
+
+/* 3D Wireframe Medicine Capsule Floating & Rotation Animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-22px) rotate(10deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(22px) rotate(-10deg);
+  }
+}
+
+@keyframes spin3DCapsule {
+  0% {
+    transform: perspective(700deg) rotateX(25deg) rotateY(0deg) rotateZ(18deg);
+  }
+  50% {
+    transform: perspective(700deg) rotateX(50deg) rotateY(180deg) rotateZ(40deg);
+  }
+  100% {
+    transform: perspective(700deg) rotateX(25deg) rotateY(360deg) rotateZ(18deg);
+  }
+}
+
+@keyframes spin3DCapsuleReverse {
+  0% {
+    transform: perspective(700deg) rotateX(-30deg) rotateY(360deg) rotateZ(-22deg);
+  }
+  50% {
+    transform: perspective(700deg) rotateX(-55deg) rotateY(180deg) rotateZ(-45deg);
+  }
+  100% {
+    transform: perspective(700deg) rotateX(-30deg) rotateY(0deg) rotateZ(-22deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 10s ease-in-out infinite;
+}
+
+.animate-capsule-spin {
+  animation: spin3DCapsule 18s linear infinite;
+  transform-style: preserve-3d;
+}
+
+.animate-capsule-spin-reverse {
+  animation: spin3DCapsuleReverse 22s linear infinite;
+  transform-style: preserve-3d;
+}
+
