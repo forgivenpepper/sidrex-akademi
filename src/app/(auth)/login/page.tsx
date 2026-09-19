@@ -38,15 +38,13 @@ export default function LoginPage() {
       <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#58b09c]/20 blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
-        {/* Logo Header with Official Sidrex Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center px-6 py-4 rounded-3xl bg-white/90 border border-[#d1eae1] mb-4 shadow-md backdrop-blur-md">
-            <img
-              src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
-              alt="Sidrex Akademi Logo"
-              className="h-10 w-auto object-contain"
-            />
-          </div>
+        {/* Logo Header with Official Sidrex Logo (directly on background) */}
+        <div className="text-center mb-8 flex flex-col items-center">
+          <img
+            src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
+            alt="Sidrex Akademi Logo"
+            className="h-12 w-auto object-contain mb-3 drop-shadow-sm"
+          />
           <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Akademi</h1>
           <p className="text-slate-500 text-xs font-semibold mt-1">Müşteri Video Galeri & Ürün Vitrini Platformu</p>
         </div>
@@ -107,6 +105,15 @@ export default function LoginPage() {
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Cemer Holding Logo Below Login Card */}
+        <div className="mt-8 flex justify-center items-center">
+          <img
+            src="https://www.cemerholding.com/storage/files/1/logo-black.png"
+            alt="Cemer Holding Logo"
+            className="h-8 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity"
+          />
         </div>
       </div>
     </div>

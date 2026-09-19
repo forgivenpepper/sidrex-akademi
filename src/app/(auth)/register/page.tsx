@@ -38,15 +38,13 @@ export default function RegisterPage() {
       <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#58b09c]/20 blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-xl my-8 relative z-10">
-        {/* Logo Header with Official Sidrex Logo */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center px-6 py-3.5 rounded-3xl bg-white/90 border border-[#d1eae1] mb-3 shadow-md backdrop-blur-md">
-            <img
-              src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
-              alt="Sidrex Akademi Logo"
-              className="h-9 w-auto object-contain"
-            />
-          </div>
+        {/* Logo Header with Official Sidrex Logo (directly on background) */}
+        <div className="text-center mb-6 flex flex-col items-center">
+          <img
+            src="https://sidrex.com/cdn/shop/files/logo.webp?v=1776667566&width=500"
+            alt="Sidrex Akademi Logo"
+            className="h-11 w-auto object-contain mb-2 drop-shadow-sm"
+          />
           <h1 className="text-3xl font-extrabold tracking-tight text-[#0b2545]">Sidrex Akademi</h1>
           <p className="text-slate-500 text-xs font-semibold mt-1">Müşteri Kayıt Formu</p>
         </div>
@@ -172,6 +170,15 @@ export default function RegisterPage() {
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Cemer Holding Logo Below Register Card */}
+        <div className="mt-8 flex justify-center items-center">
+          <img
+            src="https://www.cemerholding.com/storage/files/1/logo-black.png"
+            alt="Cemer Holding Logo"
+            className="h-8 w-auto object-contain opacity-75 hover:opacity-100 transition-opacity"
+          />
         </div>
       </div>
     </div>
