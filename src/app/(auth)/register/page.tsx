@@ -185,6 +185,38 @@ export default function RegisterPage() {
           />
         </div>
       </div>
+
+      {/* E-posta Doğrulama Linki Pop-Up Modal */}
+      {state?.success && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 relative text-center overflow-hidden">
+            <div className="w-16 h-16 rounded-full bg-[#58b09c]/15 text-[#58b09c] flex items-center justify-center mx-auto mb-5 shadow-inner">
+              <Mail className="w-8 h-8 animate-bounce" />
+            </div>
+
+            <h3 className="text-xl font-extrabold text-[#0b2545] mb-2">
+              Lütfen E-postanızdaki Linke Tıklayın!
+            </h3>
+
+            <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+              Kayıt işleminiz başarıyla alındı. Hesabınızı aktifleştirmek için{' '}
+              <strong className="text-[#0b2545] underline">{state.email || 'e-posta'}</strong> adresinize gönderdiğimiz <span className="text-[#58b09c] font-bold">doğrulama linkine tıklamanız</span> gerekmektedir.
+            </p>
+
+            <div className="p-4 rounded-2xl bg-[#edf7f3] border border-[#d1eae1] mb-6 text-xs text-[#449784] font-medium flex items-center space-x-2 text-left">
+              <span className="text-base">💡</span>
+              <span>Spam / İstenmeyen e-posta klasörünüzü kontrol etmeyi unutmayın.</span>
+            </div>
+
+            <Link
+              href="/login"
+              className="block w-full bg-[#58b09c] hover:bg-[#449784] text-white font-bold py-3.5 px-4 rounded-2xl shadow-md shadow-[#58b09c]/25 transition-all text-center text-sm"
+            >
+              Giriş Ekranına Git
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

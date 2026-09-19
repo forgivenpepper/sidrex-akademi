@@ -96,7 +96,11 @@ export async function registerAction(prevState: any, formData: FormData) {
     });
   }
 
-  redirect('/');
+  return {
+    success: true,
+    email,
+    message: 'Kayıt başarılı! Lütfen e-postanızdaki doğrulama linkine tıklayın.',
+  };
 }
 
 export async function logoutAction() {
