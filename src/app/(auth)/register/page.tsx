@@ -227,7 +227,7 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-extrabold text-[#0b2545]">KVKK Aydınlatma Metni</h3>
-                  <p className="text-xs text-slate-400 font-medium">Sidrex Akademi & Cemer Holding A.Ş.</p>
+                  <p className="text-xs text-slate-400 font-medium">Sidrex (Nproc Doğal Ürünler A.Ş. - Cemer Holding İştiraki)</p>
                 </div>
               </div>
               <button
@@ -248,7 +248,7 @@ export default function RegisterPage() {
               <section className="space-y-1">
                 <h4 className="font-bold text-[#0b2545]">1. Veri Sorumlusunun Kimliği</h4>
                 <p>
-                  Cemer Holding A.Ş. bünyesinde faaliyet gösteren Sidrex Akademi ("Şirket" veya "Sidrex Akademi") olarak, kişisel verilerinizin güvenliğine ve gizliliğine azami hassasiyet göstermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, veri sorumlusu sıfatıyla tarafımıza iletilen kişisel verileriniz işbu metinde açıklanan kapsamda işlenmektedir.
+                  Cemer Holding iştiraki olan Nproc Doğal Ürünler A.Ş. ("Şirket" veya "Nproc") bünyesinde yer alan Sidrex markasına ait Sidrex Akademi platformu olarak, kişisel verilerinizin güvenliğine ve gizliliğine azami hassasiyet göstermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, veri sorumlusu sıfatıyla tarafımıza iletilen kişisel verileriniz işbu metinde açıklanan kapsamda işlenmektedir.
                 </p>
               </section>
 
@@ -267,7 +267,7 @@ export default function RegisterPage() {
               <section className="space-y-1">
                 <h4 className="font-bold text-[#0b2545]">3. Kişisel Verilerin Aktarılması</h4>
                 <p>
-                  Kişisel verileriniz; yukarıda belirtilen amaçların gerçekleştirilmesi doğrultusunda, KVKK’nın 8. ve 9. maddelerine uygun olarak, yetkili kamu kurum ve kuruluşlarına, hukuki uyuşmazlıkların giderilmesi amacıyla adli makamlara ve Şirketimizin hizmet aldığı güvenli sunucu ve veri depolama altyapı sağlayıcılarına aktarılabilecektir.
+                  Kişisel verileriniz; yukarıda belirtilen amaçların gerçekleştirilmesi doğrultusunda, KVKK’nın 8. ve 9. maddelerine uygun olarak, ana ortaklığımız Cemer Holding A.Ş. ve bağlı iştiraklerine, yetkili kamu kurum ve kuruluşlarına, adli makamlara ve Şirketimizin hizmet aldığı güvenli sunucu/altyapı sağlayıcılarına aktarılabilecektir.
                 </p>
               </section>
 
@@ -295,7 +295,7 @@ export default function RegisterPage() {
               <section className="space-y-1">
                 <h4 className="font-bold text-[#0b2545]">6. İletişim ve Başvuru</h4>
                 <p>
-                  KVKK kapsamındaki taleplerinizi yazılı olarak veya onaylı e-posta adresiniz üzerinden <span className="font-semibold text-[#58b09c]">kvkk@cemerholding.com</span> adresine iletebilirsiniz.
+                  KVKK kapsamındaki taleplerinizi yazılı olarak veya onaylı e-posta adresiniz üzerinden <span className="font-semibold text-[#58b09c]">kvkk@nproc.com.tr</span> veya <span className="font-semibold text-[#58b09c]">kvkk@cemerholding.com</span> adresine iletebilirsiniz.
                 </p>
               </section>
             </div>
