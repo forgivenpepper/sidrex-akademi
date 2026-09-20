@@ -3,19 +3,21 @@
 import React, { useEffect, useRef } from 'react';
 
 interface CapsuleConfig {
-  xPct: number;        // Screen X % (0-100)
-  yPct: number;        // Screen Y % (0-100)
-  radius: number;      // Capsule radius
-  bodyHeight: number;  // Body length
-  scale: number;       // Base scale multiplier
-  rotY: number;        // Initial Y rotation angle
-  rotSpeed: number;    // Y rotation speed (rad/frame)
-  tiltX: number;       // Fixed tilt X
-  tiltZ: number;       // Fixed tilt Z
-  floatSpeed: number;  // Floating bob frequency
-  floatAmp: number;    // Floating amplitude in px
-  floatPhase: number;  // Phase offset
-  color: string;       // Color theme (hex/rgba)
+  xPct: number;          // Screen X base % (0-100)
+  yPct: number;          // Screen Y base % (0-100)
+  radius: number;        // Capsule radius
+  bodyHeight: number;    // Body length
+  scale: number;         // Base scale multiplier
+  rotY: number;          // Initial Y rotation angle
+  rotSpeed: number;      // Y rotation speed (rad/frame)
+  tiltX: number;         // Base tilt X
+  tiltZ: number;         // Base tilt Z
+  floatSpeedY: number;   // Vertical float frequency
+  floatSpeedX: number;   // Horizontal float frequency
+  floatAmpY: number;     // Vertical float amplitude in px
+  floatAmpX: number;     // Horizontal float amplitude in px
+  floatPhase: number;    // Phase offset
+  opacityFactor: number; // Opacity multiplier
   hideOnMobile?: boolean;
 }
 
@@ -30,7 +32,7 @@ export function FloatingWireframeCapsules() {
 
     let animationFrameId: number;
 
-    // Define 4 Floating 3D Capsules in screen space
+    // 6 Floating 3D Capsules with multi-axis gliding & tilt sway
     const capsules: CapsuleConfig[] = [
       {
         xPct: 12,
@@ -39,29 +41,33 @@ export function FloatingWireframeCapsules() {
         bodyHeight: 65,
         scale: 1.0,
         rotY: 0,
-        rotSpeed: 0.008,
+        rotSpeed: 0.007,
         tiltX: 0.35,
         tiltZ: -0.2,
-        floatSpeed: 0.0012,
-        floatAmp: 18,
+        floatSpeedY: 0.0008,
+        floatSpeedX: 0.0006,
+        floatAmpY: 48,
+        floatAmpX: 32,
         floatPhase: 0,
-        color: '#58b09c',
+        opacityFactor: 1.0,
         hideOnMobile: true,
       },
       {
-        xPct: 15,
-        yPct: 78,
+        xPct: 14,
+        yPct: 76,
         radius: 22,
         bodyHeight: 52,
         scale: 0.9,
         rotY: 1.2,
-        rotSpeed: -0.007,
+        rotSpeed: -0.006,
         tiltX: -0.25,
         tiltZ: 0.3,
-        floatSpeed: 0.001,
-        floatAmp: 15,
+        floatSpeedY: 0.0007,
+        floatSpeedX: 0.0005,
+        floatAmpY: 42,
+        floatAmpX: 28,
         floatPhase: 2.5,
-        color: '#58b09c',
+        opacityFactor: 0.9,
         hideOnMobile: true,
       },
       {
@@ -71,29 +77,69 @@ export function FloatingWireframeCapsules() {
         bodyHeight: 48,
         scale: 0.85,
         rotY: 2.1,
-        rotSpeed: -0.009,
+        rotSpeed: -0.008,
         tiltX: 0.3,
         tiltZ: 0.25,
-        floatSpeed: 0.0014,
-        floatAmp: 14,
+        floatSpeedY: 0.0009,
+        floatSpeedX: 0.0007,
+        floatAmpY: 40,
+        floatAmpX: 30,
         floatPhase: 1.2,
-        color: '#58b09c',
+        opacityFactor: 0.95,
         hideOnMobile: true,
       },
       {
         xPct: 87,
-        yPct: 80,
+        yPct: 78,
         radius: 28,
         bodyHeight: 70,
         scale: 1.1,
         rotY: 0.5,
-        rotSpeed: 0.0075,
+        rotSpeed: 0.0065,
         tiltX: -0.3,
         tiltZ: -0.25,
-        floatSpeed: 0.0011,
-        floatAmp: 20,
+        floatSpeedY: 0.00075,
+        floatSpeedX: 0.00055,
+        floatAmpY: 55,
+        floatAmpX: 36,
         floatPhase: 4.1,
-        color: '#58b09c',
+        opacityFactor: 1.0,
+        hideOnMobile: true,
+      },
+      {
+        xPct: 28,
+        yPct: 48,
+        radius: 16,
+        bodyHeight: 38,
+        scale: 0.65,
+        rotY: 1.8,
+        rotSpeed: 0.009,
+        tiltX: 0.2,
+        tiltZ: -0.15,
+        floatSpeedY: 0.001,
+        floatSpeedX: 0.0008,
+        floatAmpY: 34,
+        floatAmpX: 22,
+        floatPhase: 3.3,
+        opacityFactor: 0.55,
+        hideOnMobile: true,
+      },
+      {
+        xPct: 72,
+        yPct: 52,
+        radius: 15,
+        bodyHeight: 36,
+        scale: 0.6,
+        rotY: 3.0,
+        rotSpeed: -0.0085,
+        tiltX: -0.2,
+        tiltZ: 0.2,
+        floatSpeedY: 0.00085,
+        floatSpeedX: 0.00065,
+        floatAmpY: 32,
+        floatAmpX: 24,
+        floatPhase: 5.2,
+        opacityFactor: 0.5,
         hideOnMobile: true,
       },
     ];
@@ -188,14 +234,14 @@ export function FloatingWireframeCapsules() {
       let z1 = -x * sinY + z * cosY;
       let y1 = y;
 
-      // Tilt X
+      // Tilt X (Dynamic sway)
       const cosX = Math.cos(tiltX);
       const sinX = Math.sin(tiltX);
       let y2 = y1 * cosX - z1 * sinX;
       let z2 = y1 * sinX + z1 * cosX;
       let x2 = x1;
 
-      // Tilt Z
+      // Tilt Z (Dynamic sway)
       const cosZ = Math.cos(tiltZ);
       const sinZ = Math.sin(tiltZ);
       let x3 = x2 * cosZ - y2 * sinZ;
@@ -227,25 +273,33 @@ export function FloatingWireframeCapsules() {
 
         const mesh = meshes[cIdx];
 
-        // Rotation & Floating offset
+        // 1. Continuous Rotation around Y-axis
         capsule.rotY += capsule.rotSpeed;
-        const floatOffsetY = Math.sin(elapsed * capsule.floatSpeed + capsule.floatPhase) * capsule.floatAmp;
 
-        const cx = (width * capsule.xPct) / 100;
+        // 2. Multi-axis Silky Floating (Glide X & Y)
+        const floatOffsetY = Math.sin(elapsed * capsule.floatSpeedY + capsule.floatPhase) * capsule.floatAmpY;
+        const floatOffsetX = Math.cos(elapsed * capsule.floatSpeedX + capsule.floatPhase * 1.4) * capsule.floatAmpX;
+
+        // 3. Dynamic Tilt Sway (Zero-G floating effect)
+        const currentTiltX = capsule.tiltX + Math.sin(elapsed * 0.0006 + capsule.floatPhase) * 0.12;
+        const currentTiltZ = capsule.tiltZ + Math.cos(elapsed * 0.0005 + capsule.floatPhase * 0.8) * 0.12;
+
+        const cx = (width * capsule.xPct) / 100 + floatOffsetX;
         const cy = (height * capsule.yPct) / 100 + floatOffsetY;
+        const opacityMult = capsule.opacityFactor;
 
         // Project all points
         const projectedRings = mesh.rings.map((ring) =>
           ring.map((p) =>
-            projectPoint(p, capsule.rotY, capsule.tiltX, capsule.tiltZ, cx, cy, capsule.scale)
+            projectPoint(p, capsule.rotY, currentTiltX, currentTiltZ, cx, cy, capsule.scale)
           )
         );
 
         const projTopPole = projectPoint(
           mesh.topPole,
           capsule.rotY,
-          capsule.tiltX,
-          capsule.tiltZ,
+          currentTiltX,
+          currentTiltZ,
           cx,
           cy,
           capsule.scale
@@ -253,8 +307,8 @@ export function FloatingWireframeCapsules() {
         const projBottomPole = projectPoint(
           mesh.bottomPole,
           capsule.rotY,
-          capsule.tiltX,
-          capsule.tiltZ,
+          currentTiltX,
+          currentTiltZ,
           cx,
           cy,
           capsule.scale
@@ -269,18 +323,19 @@ export function FloatingWireframeCapsules() {
             const curr = ring[i];
             const next = ring[(i + 1) % ring.length];
 
-            // Draw line segment with depth opacity calculation
+            // Depth opacity calculation
             const avgZ = (curr.z + next.z) / 2;
-            const depthAlpha = avgZ < 0 ? 0.75 : 0.28; // Front brighter, back softer
+            const baseAlpha = avgZ < 0 ? 0.78 : 0.26;
+            const finalAlpha = baseAlpha * opacityMult;
 
             ctx.beginPath();
             ctx.moveTo(curr.px, curr.py);
             ctx.lineTo(next.px, next.py);
 
-            ctx.lineWidth = isJoint ? (avgZ < 0 ? 1.2 : 0.8) : (avgZ < 0 ? 0.75 : 0.5);
+            ctx.lineWidth = isJoint ? (avgZ < 0 ? 1.25 : 0.8) : (avgZ < 0 ? 0.75 : 0.45);
             ctx.strokeStyle = isJoint
-              ? `rgba(88, 176, 156, ${depthAlpha * 1.2})`
-              : `rgba(88, 176, 156, ${depthAlpha})`;
+              ? `rgba(88, 176, 156, ${finalAlpha * 1.2})`
+              : `rgba(88, 176, 156, ${finalAlpha})`;
             ctx.stroke();
           }
         });
@@ -290,11 +345,13 @@ export function FloatingWireframeCapsules() {
           // Top Pole to First Ring
           const firstPoint = projectedRings[0][j];
           const topZ = (projTopPole.z + firstPoint.z) / 2;
+          const topAlpha = (topZ < 0 ? 0.65 : 0.22) * opacityMult;
+
           ctx.beginPath();
           ctx.moveTo(projTopPole.px, projTopPole.py);
           ctx.lineTo(firstPoint.px, firstPoint.py);
-          ctx.lineWidth = topZ < 0 ? 0.75 : 0.5;
-          ctx.strokeStyle = `rgba(88, 176, 156, ${topZ < 0 ? 0.65 : 0.25})`;
+          ctx.lineWidth = topZ < 0 ? 0.75 : 0.45;
+          ctx.strokeStyle = `rgba(88, 176, 156, ${topAlpha})`;
           ctx.stroke();
 
           // Connect Ring to Ring along longitude
@@ -302,23 +359,26 @@ export function FloatingWireframeCapsules() {
             const p1 = projectedRings[r][j];
             const p2 = projectedRings[r + 1][j];
             const avgZ = (p1.z + p2.z) / 2;
+            const lineAlpha = (avgZ < 0 ? 0.65 : 0.22) * opacityMult;
 
             ctx.beginPath();
             ctx.moveTo(p1.px, p1.py);
             ctx.lineTo(p2.px, p2.py);
             ctx.lineWidth = avgZ < 0 ? 0.75 : 0.45;
-            ctx.strokeStyle = `rgba(88, 176, 156, ${avgZ < 0 ? 0.65 : 0.25})`;
+            ctx.strokeStyle = `rgba(88, 176, 156, ${lineAlpha})`;
             ctx.stroke();
           }
 
           // Last Ring to Bottom Pole
           const lastPoint = projectedRings[projectedRings.length - 1][j];
           const botZ = (projBottomPole.z + lastPoint.z) / 2;
+          const botAlpha = (botZ < 0 ? 0.65 : 0.22) * opacityMult;
+
           ctx.beginPath();
           ctx.moveTo(lastPoint.px, lastPoint.py);
           ctx.lineTo(projBottomPole.px, projBottomPole.py);
-          ctx.lineWidth = botZ < 0 ? 0.75 : 0.5;
-          ctx.strokeStyle = `rgba(88, 176, 156, ${botZ < 0 ? 0.65 : 0.25})`;
+          ctx.lineWidth = botZ < 0 ? 0.75 : 0.45;
+          ctx.strokeStyle = `rgba(88, 176, 156, ${botAlpha})`;
           ctx.stroke();
         }
       });
