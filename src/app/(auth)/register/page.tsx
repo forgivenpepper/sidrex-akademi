@@ -295,7 +295,7 @@ export default function RegisterPage() {
               <section className="space-y-1">
                 <h4 className="font-bold text-[#0b2545]">6. İletişim ve Başvuru</h4>
                 <p>
-                  KVKK kapsamındaki taleplerinizi yazılı olarak veya onaylı e-posta adresiniz üzerinden <span className="font-semibold text-[#58b09c]">kvkk@nproc.com.tr</span> veya <span className="font-semibold text-[#58b09c]">kvkk@cemerholding.com</span> adresine iletebilirsiniz.
+                  KVKK kapsamındaki taleplerinizi ve başvurularınızı yazılı olarak veya onaylı e-posta adresiniz üzerinden <span className="font-semibold text-[#58b09c]">info@nproc.com.tr</span>, <span className="font-semibold text-[#58b09c]">destek@sidrex.com</span>, <span className="font-semibold text-[#58b09c]">kvkk@nproc.com.tr</span> veya <span className="font-semibold text-[#58b09c]">kvkk@cemerholding.com</span> adreslerine iletebilirsiniz.
                 </p>
               </section>
             </div>
