@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch the video from the external source
-    const response = await fetch(videoUrl, {
+    const response = await fetch(videoUrl as string, {
       headers: headersToForward,
     });
 
