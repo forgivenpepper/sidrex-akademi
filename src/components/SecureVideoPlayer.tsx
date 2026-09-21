@@ -37,7 +37,7 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
         const res = await fetch(`/api/video-stream/sign?productId=${productId}`);
         if (!res.ok) throw new Error('Video başlatılamadı');
         const data = await res.json();
-        setTokenUrl(`/api/video-stream?token=${data.token}`);
+        setTokenUrl(`/api/secure-media?token=${data.token}`);
       } catch (err) {
         setError('Video bağlantısı kurulamadı. Lütfen sayfayı yenileyin.');
       }

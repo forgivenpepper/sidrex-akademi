@@ -1,11 +1,77 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+// Helper to base64url decode
+function base64UrlToBuffer(b64url: string) {
+  const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+  const binStr = atob(b64);
+  const bytes = new Uint8Array(binStr.length);
+  for (let i = 0; i < binStr.length; i++) {
+    bytes[i] = binStr.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
+  const pathname = request.nextUrl.pathname;
 
+  // 1. Extreme Speed Native Proxy (Middleware Rewrite)
+  if (pathname.startsWith('/api/secure-media')) {
+    const token = request.nextUrl.searchParams.get('token');
+    if (!token) return new NextResponse('Missing token', { status: 401 });
+
+    try {
+      const [payloadB64, sigB64] = token.split('.');
+      if (!payloadB64 || !sigB64) throw new Error('Invalid token');
+
+      const encoder = new TextEncoder();
+      const secret = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'default-secret';
+      const keyData = encoder.encode(secret);
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']
+      );
+
+      const isValid = await crypto.subtle.verify(
+        'HMAC', cryptoKey, base64UrlToBuffer(sigB64), encoder.encode(payloadB64)
+      );
+
+      if (!isValid) return new NextResponse('Forbidden', { status: 403 });
+
+      const payloadStr = atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(payloadStr);
+
+      if (Date.now() > payload.exp) return new NextResponse('Expired', { status: 403 });
+
+      const productId = payload.p;
+      
+      let videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+      
+      if (productId !== 'DEMO') {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        const res = await fetch(`${supabaseUrl}/rest/v1/products?id=eq.${productId}&select=video_url`, {
+          headers: { 'apikey': supabaseKey!, 'Authorization': `Bearer ${supabaseKey!}` }
+        });
+        const data = await res.json();
+        if (data && data.length > 0 && data[0].video_url) {
+          videoUrl = data[0].video_url;
+        } else {
+          return new NextResponse('Not found', { status: 404 });
+        }
+      }
+
+      // MUST use new URL() for external rewrites to work properly in Vercel Edge!
+      return NextResponse.rewrite(new URL(videoUrl));
+    } catch (e) {
+      console.error(e);
+      return new NextResponse('Proxy Error', { status: 500 });
+    }
+  }
+
+  // 2. Standard Supabase Auth
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
