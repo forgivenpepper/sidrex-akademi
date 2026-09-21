@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface SecureVideoPlayerProps {
-  videoUrl: string;
+  productId: string;
   userEmail?: string;
 }
 
-export default function SecureVideoPlayer({ videoUrl, userEmail: propUserEmail }: SecureVideoPlayerProps) {
+export default function SecureVideoPlayer({ productId, userEmail: propUserEmail }: SecureVideoPlayerProps) {
   const [watermarkPos, setWatermarkPos] = useState({ top: 10, left: 10 });
   const [email, setEmail] = useState<string>(propUserEmail || '');
   const [isScreenshotting, setIsScreenshotting] = useState(false);
@@ -59,7 +59,7 @@ export default function SecureVideoPlayer({ videoUrl, userEmail: propUserEmail }
     };
   }, []);
 
-  const secureStreamUrl = `/api/video-stream?url=${encodeURIComponent(videoUrl)}`;
+  const secureStreamUrl = `/api/video-stream?productId=${productId}`;
 
   return (
     <div 

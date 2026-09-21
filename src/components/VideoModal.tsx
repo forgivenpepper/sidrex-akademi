@@ -98,7 +98,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     if (product.video_type === 'secure' && product.video_url) {
       return (
         <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
-           <SecureVideoPlayer videoUrl={product.video_url} />
+           <SecureVideoPlayer productId={product.id} />
         </div>
       );
     }

@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const videoUrl = searchParams.get('url');
+  const productId = searchParams.get('productId');
 
-  if (!videoUrl) {
-    return new NextResponse('Missing video URL', { status: 400 });
+  if (!productId) {
+    return new NextResponse('Missing product ID', { status: 400 });
   }
 
+  let videoUrl: string | null = null;
+
   try {
+    const supabase = await createClient();
+    const { data: product, error } = await supabase
+      .from('products')
+      .select('video_url')
+      .eq('id', productId)
+      .single();
+
+    if (error || !product || !product.video_url) {
+      console.error('Failed to get video URL from DB:', error);
+      return new NextResponse('Video not found', { status: 404 });
+    }
+
+    videoUrl = product.video_url;
+
     // Determine headers to forward (specifically Range for seeking)
     const rangeHeader = req.headers.get('range');
     const headersToForward: HeadersInit = {};
