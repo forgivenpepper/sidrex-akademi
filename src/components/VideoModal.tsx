@@ -38,6 +38,15 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
+    // 0. SECURE MODE (Gizli / Korumalı Video Streaming)
+    if (product.video_type === 'secure') {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
+          <SecureVideoPlayer productId={product.id} />
+        </div>
+      );
+    }
+
     const url = (product.video_url || '').trim();
 
     // 1. Iframe Code check (if user pasted raw <iframe> html)
@@ -136,13 +145,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
-    if (product.video_type === 'secure' && product.video_url) {
-      return (
-        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
-           <SecureVideoPlayer productId={product.id} />
-        </div>
-      );
-    }
+
 
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
