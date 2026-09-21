@@ -90,19 +90,15 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
       onContextMenu={(e) => e.preventDefault()}
       style={{ isolation: 'isolate' }}
     >
-      {/* Video Element */}
+      {/* Secure Proxied Element (No Drive link exposed in DOM or Source) */}
       {tokenUrl ? (
-        <video
+        <iframe
           src={tokenUrl}
-          controls
-          controlsList="nodownload"
-          disablePictureInPicture
-          autoPlay
-          className="w-full h-auto max-h-[70vh]"
+          allow="autoplay; fullscreen"
+          allowFullScreen
+          className="w-full h-full min-h-[450px] rounded-xl border-0"
           style={{ pointerEvents: 'auto' }}
-        >
-          Your browser does not support the video tag.
-        </video>
+        />
       ) : (
         <div className="flex items-center justify-center h-full min-h-[300px]">
           <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
