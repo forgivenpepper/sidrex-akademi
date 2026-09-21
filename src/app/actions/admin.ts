@@ -109,7 +109,20 @@ export async function saveProductAction(prevState: any, formData: FormData) {
   const section_id = (formData.get('section_id') as string) || null;
   const description = formData.get('description') as string;
   const video_type = (formData.get('video_type') as VideoType) || 'youtube';
-  let video_url = formData.get('video_url') as string;
+  const existing_video_url = (formData.get('existing_video_url') as string) || null;
+  let video_url = (formData.get('video_url') as string) || '';
+
+  if (!video_url.trim()) {
+    video_url = existing_video_url || '';
+  } else {
+    video_url = video_url.trim();
+  }
+
+  // Prepend https:// if user entered domain without protocol (e.g. youtube.com..., youtu.be..., vimeo.com...)
+  if (video_url && !video_url.startsWith('http://') && !video_url.startsWith('https://') && !video_url.startsWith('<iframe')) {
+    video_url = `https://${video_url}`;
+  }
+
   const is_published = formData.get('is_published') === 'on' || formData.get('is_published') === 'true';
 
   // Specs Key-Value JSON parsing

@@ -29,12 +29,50 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   const mailtoLink = `mailto:info@sidrex.com?subject=${emailSubject}&body=${emailBody}`;
 
   const renderVideoPlayer = () => {
-    if (product.video_type === 'youtube' && product.video_url) {
-      let embedUrl = product.video_url;
-      const ytMatch = product.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-      if (ytMatch && ytMatch[1]) {
-        embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+    if (!product.video_url && !product.storage_video_path) {
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
+          <Video className="w-12 h-12 mb-3 opacity-80" />
+          <p className="font-semibold text-slate-600 text-sm">Bu ürün için önizleme videosu bulunmamaktadır.</p>
+        </div>
+      );
+    }
+
+    const url = (product.video_url || '').trim();
+
+    // 1. Iframe Code check (if user pasted raw <iframe> html)
+    if (url.includes('<iframe')) {
+      return (
+        <div
+          className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
+          dangerouslySetInnerHTML={{ __html: url }}
+        />
+      );
+    }
+
+    // 2. Google Drive Links (drive.google.com)
+    if (url.includes('drive.google.com')) {
+      const gDriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (gDriveMatch && gDriveMatch[1]) {
+        const embedUrl = `https://drive.google.com/file/d/${gDriveMatch[1]}/preview`;
+        return (
+          <iframe
+            src={embedUrl}
+            title={product.title}
+            allow="autoplay"
+            allowFullScreen
+            className="w-full h-full rounded-2xl"
+          />
+        );
       }
+    }
+
+    // 3. YouTube Links & Raw 11-char IDs
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|watch\?.+&v=))([\w-]{11})/) ||
+      (url.length === 11 && url.match(/^[\w-]{11}$/) ? [null, url] : null);
+
+    if (ytMatch && ytMatch[1]) {
+      const embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
       return (
         <iframe
           src={embedUrl}
@@ -46,48 +84,51 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
-    if (product.video_type === 'vimeo' && product.video_url) {
-      let embedUrl = product.video_url;
-      const vimeoMatch = product.video_url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    // 4. Vimeo Links
+    if (url.includes('vimeo.com') || product.video_type === 'vimeo') {
+      const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/);
+      const hMatch = url.match(/[?&]h=([a-zA-Z0-9]+)/);
+
       if (vimeoMatch && vimeoMatch[1]) {
-        embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+        let hParam = '';
+        if (hMatch && hMatch[1]) {
+          hParam = `&h=${hMatch[1]}`;
+        } else if (vimeoMatch[2]) {
+          hParam = `&h=${vimeoMatch[2]}`;
+        }
+        const embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1${hParam}`;
+        return (
+          <iframe
+            src={embedUrl}
+            title={product.title}
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full rounded-2xl"
+          />
+        );
       }
-      return (
-        <iframe
-          src={embedUrl}
-          title={product.title}
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full rounded-2xl"
-        />
-      );
     }
 
-    if (product.video_type === 'upload' && (product.video_url || product.storage_video_path)) {
+    // 5. Uploaded MP4 or Direct MP4/Video File
+    if (product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
       return (
         <video
           controls
           autoPlay
+          playsInline
           className="w-full h-full object-cover rounded-2xl"
-          src={product.video_url || ''}
+          src={url || product.storage_video_path || ''}
         >
           Tarayıcınız video oynatmayı desteklemiyor.
         </video>
       );
     }
 
-    if (product.video_type === 'embed' && product.video_url) {
-      if (product.video_url.includes('<iframe')) {
-        return (
-          <div
-            className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
-            dangerouslySetInnerHTML={{ __html: product.video_url }}
-          />
-        );
-      }
+    // 6. Generic Fallback iframe for any other URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
       return (
         <iframe
-          src={product.video_url}
+          src={url}
           title={product.title}
           allowFullScreen
           className="w-full h-full rounded-2xl"
@@ -139,6 +180,27 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
           <div className="relative w-full aspect-video rounded-2xl bg-slate-900 shadow-lg border border-slate-200 overflow-hidden">
             {renderVideoPlayer()}
           </div>
+
+          {/* External Link & YouTube Warning Bar */}
+          {product.video_url && (
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 text-slate-600">
+                <Info className="w-4 h-4 text-[#58b09c] flex-shrink-0" />
+                <span>
+                  Video oynatıcıda <strong>"Video Kullanılamıyor"</strong> uyarısı alıyorsanız, YouTube Studio ayarlarından videoyu <strong>"Liste Dışı (Unlisted)"</strong> ve <strong>"Sitelerde Gösterime İzin Ver"</strong> konumuna getirin.
+                </span>
+              </div>
+              <a
+                href={product.video_url.startsWith('http') ? product.video_url : `https://${product.video_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:text-[#0b2545] font-semibold flex items-center gap-1.5 flex-shrink-0 shadow-sm transition-all"
+              >
+                <span>Videoyu Harici Sekmede Aç</span>
+                <Video className="w-3.5 h-3.5 text-[#58b09c]" />
+              </a>
+            </div>
+          )}
 
           {/* Details & Specs Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
