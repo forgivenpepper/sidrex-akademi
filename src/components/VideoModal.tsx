@@ -3,6 +3,7 @@
 import { Product } from '@/lib/types/database';
 import { X, Mail, Video, Info } from 'lucide-react';
 import { useEffect } from 'react';
+import SecureVideoPlayer from './SecureVideoPlayer';
 
 interface VideoModalProps {
   product: Product | null;
@@ -91,6 +92,14 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
           allowFullScreen
           className="w-full h-full rounded-2xl"
         />
+      );
+    }
+
+    if (product.video_type === 'secure' && product.video_url) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
+           <SecureVideoPlayer videoUrl={product.video_url} />
+        </div>
       );
     }
 

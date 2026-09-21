@@ -15,7 +15,8 @@ import {
   FileImage,
   Save,
   CheckSquare,
-  Square
+  Square,
+  Shield
 } from 'lucide-react';
 
 interface ProductFormProps {
@@ -155,12 +156,13 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
           <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-3">
             Video Kaynağı Tipi
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
               { type: 'youtube', label: 'YouTube URL', icon: LinkIcon },
               { type: 'vimeo', label: 'Vimeo URL', icon: LinkIcon },
               { type: 'embed', label: 'Embed İframe Kodu', icon: Code },
               { type: 'upload', label: 'Doğrudan Video Yükle (MP4)', icon: Upload },
+              { type: 'secure', label: 'Korumalı Video URL', icon: Shield },
             ].map((item) => {
               const Icon = item.icon;
               const isSelected = videoType === item.type;
@@ -215,14 +217,16 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
         ) : (
           <div>
             <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              {videoType === 'youtube' ? 'YouTube Video URL' : 'Vimeo Video URL'}
+              {videoType === 'secure' ? 'Güvenli (Korumalı) Video URL' : videoType === 'youtube' ? 'YouTube Video URL' : 'Vimeo Video URL'}
             </label>
             <input
               type="url"
               name="video_url"
               defaultValue={product?.video_url || ''}
               placeholder={
-                videoType === 'youtube'
+                videoType === 'secure'
+                  ? 'https://sunucunuz.com/gizli-video.mp4'
+                  : videoType === 'youtube'
                   ? 'https://www.youtube.com/watch?v=...'
                   : 'https://vimeo.com/...'
               }
