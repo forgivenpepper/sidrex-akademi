@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 // Helper to base64url encode a buffer/uint8array
-function bufferToBase64Url(buffer: ArrayBuffer) {
-  const bytes = new Uint8Array(buffer);
+function bufferToBase64Url(buffer: ArrayBuffer | Uint8Array) {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
   let str = '';
   for (let i = 0; i < bytes.byteLength; i++) {
     str += String.fromCharCode(bytes[i]);
