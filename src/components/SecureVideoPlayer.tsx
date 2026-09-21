@@ -1,40 +1,72 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface SecureVideoPlayerProps {
   videoUrl: string;
   userEmail?: string;
 }
 
-export default function SecureVideoPlayer({ videoUrl, userEmail }: SecureVideoPlayerProps) {
+export default function SecureVideoPlayer({ videoUrl, userEmail: propUserEmail }: SecureVideoPlayerProps) {
   const [watermarkPos, setWatermarkPos] = useState({ top: 10, left: 10 });
+  const [email, setEmail] = useState<string>(propUserEmail || '');
+  const [isScreenshotting, setIsScreenshotting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Fetch user email if not provided via props
+  useEffect(() => {
+    if (!propUserEmail) {
+      const fetchUser = async () => {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email) {
+          setEmail(user.email);
+        }
+      };
+      fetchUser();
+    }
+  }, [propUserEmail]);
 
   useEffect(() => {
-    // Change watermark position every 5 seconds to prevent static screen recording
+    // 1. Watermark movement
     const interval = setInterval(() => {
       if (containerRef.current) {
-        // We use percentages to keep it responsive, avoiding edges (10% to 80%)
         const randomTop = Math.floor(Math.random() * 70) + 10;
         const randomLeft = Math.floor(Math.random() * 70) + 10;
-        
         setWatermarkPos({ top: randomTop, left: randomLeft });
       }
     }, 5000);
 
-    return () => clearInterval(interval);
+    // 2. Screenshot & Snipping Tool Prevention Listener
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // PrintScreen key or Win+Shift+S or Cmd+Shift+S / Cmd+Shift+3 / Cmd+Shift+4
+      const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
+      const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
+      
+      if (isMacScreenshot || isWinScreenshot) {
+        setIsScreenshotting(true);
+        // Hide the block screen after 4 seconds
+        setTimeout(() => setIsScreenshotting(false), 4000);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
-  // Use the proxy API route instead of the raw URL
   const secureStreamUrl = `/api/video-stream?url=${encodeURIComponent(videoUrl)}`;
 
   return (
     <div 
       ref={containerRef} 
       className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-xl shadow-lg bg-black group"
-      // Prevent right click entirely on the container
       onContextMenu={(e) => e.preventDefault()}
+      style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
       <video
         src={secureStreamUrl}
@@ -54,7 +86,6 @@ export default function SecureVideoPlayer({ videoUrl, userEmail }: SecureVideoPl
           top: `${watermarkPos.top}%`, 
           left: `${watermarkPos.left}%`,
           transform: 'translate(-50%, -50%)',
-          // Mix-blend-mode makes the text readable regardless of video background color
           mixBlendMode: 'difference',
           color: 'rgba(255, 255, 255, 0.7)'
         }}
@@ -62,12 +93,23 @@ export default function SecureVideoPlayer({ videoUrl, userEmail }: SecureVideoPl
         <span className="font-bold text-lg md:text-xl tracking-wider text-center drop-shadow-md">
           PAYLAŞIM YASAKTIR
         </span>
-        {userEmail && (
+        {email && (
           <span className="text-xs md:text-sm font-medium tracking-wide drop-shadow-md">
-            {userEmail}
+            {email}
           </span>
         )}
       </div>
+
+      {/* Massive Black Overlay on Screenshot Attempt */}
+      {isScreenshotting && (
+        <div className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center text-red-500 font-bold p-8 text-center animate-pulse">
+          <span className="text-3xl md:text-5xl mb-4">PAYLAŞIM YASAKTIR</span>
+          <span className="text-xl md:text-2xl text-white">Bu içerik telif hakları ile korunmaktadır.</span>
+          {email && (
+            <span className="mt-8 text-lg text-gray-400">Kayıtlı Kullanıcı: {email}</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
