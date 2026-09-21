@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+export const runtime = 'edge';
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const productId = searchParams.get('productId');
@@ -12,19 +14,23 @@ export async function GET(req: NextRequest) {
   let videoUrl: string | null = null;
 
   try {
-    const supabase = await createClient();
-    const { data: product, error } = await supabase
-      .from('products')
-      .select('video_url')
-      .eq('id', productId)
-      .single();
+    if (productId === 'DEMO') {
+      videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    } else {
+      const supabase = await createClient();
+      const { data: product, error } = await supabase
+        .from('products')
+        .select('video_url')
+        .eq('id', productId)
+        .single();
 
-    if (error || !product || !product.video_url) {
-      console.error('Failed to get video URL from DB:', error);
-      return new NextResponse('Video not found', { status: 404 });
+      if (error || !product || !product.video_url) {
+        console.error('Failed to get video URL from DB:', error);
+        return new NextResponse('Video not found', { status: 404 });
+      }
+
+      videoUrl = product.video_url;
     }
-
-    videoUrl = product.video_url;
 
     // Determine headers to forward (specifically Range for seeking)
     const rangeHeader = req.headers.get('range');
