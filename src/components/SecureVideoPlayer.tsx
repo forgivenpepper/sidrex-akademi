@@ -50,25 +50,11 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
       }
     };
 
-    // When Snipping Tool opens (Win+Shift+S), the browser immediately loses focus.
-    const handleBlur = () => {
-      setIsScreenshotting(true);
-    };
-
-    const handleFocus = () => {
-      // Keep it hidden for a split second after they return to prevent rapid snips
-      setTimeout(() => setIsScreenshotting(false), 500);
-    };
-
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
     };
   }, []);
 
