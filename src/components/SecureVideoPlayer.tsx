@@ -12,6 +12,8 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
   const [watermarkPos, setWatermarkPos] = useState({ top: 10, left: 10 });
   const [email, setEmail] = useState<string>(propUserEmail || '');
   const [isScreenshotting, setIsScreenshotting] = useState(false);
+  const [tokenUrl, setTokenUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Fetch user email if not provided via props
@@ -27,6 +29,21 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
       fetchUser();
     }
   }, [propUserEmail]);
+
+  // Fetch expiring token URL
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const res = await fetch(`/api/video-stream/sign?productId=${productId}`);
+        if (!res.ok) throw new Error('Video başlatılamadı');
+        const data = await res.json();
+        setTokenUrl(`/api/video-stream?token=${data.token}`);
+      } catch (err) {
+        setError('Video bağlantısı kurulamadı. Lütfen sayfayı yenileyin.');
+      }
+    };
+    fetchToken();
+  }, [productId]);
 
   useEffect(() => {
     // 1. Watermark movement
@@ -58,25 +75,39 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
     };
   }, []);
 
-  const secureStreamUrl = `/api/video-stream?productId=${productId}`;
+  if (error) {
+    return (
+      <div className="w-full h-full min-h-[300px] flex items-center justify-center bg-slate-900 rounded-xl border border-red-500/30">
+        <p className="text-red-400 font-medium">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-xl shadow-lg bg-black group"
+      className="relative w-full h-full bg-black rounded-xl overflow-hidden shadow-2xl flex items-center justify-center"
       onContextMenu={(e) => e.preventDefault()}
-      style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+      style={{ isolation: 'isolate' }}
     >
-      <video
-        src={secureStreamUrl}
-        controls
-        controlsList="nodownload"
-        disablePictureInPicture
-        className="w-full h-auto max-h-[70vh]"
-        style={{ pointerEvents: 'auto' }}
-      >
-        Your browser does not support the video tag.
-      </video>
+      {/* Video Element */}
+      {tokenUrl ? (
+        <video
+          src={tokenUrl}
+          controls
+          controlsList="nodownload"
+          disablePictureInPicture
+          autoPlay
+          className="w-full h-auto max-h-[70vh]"
+          style={{ pointerEvents: 'auto' }}
+        >
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <div className="flex items-center justify-center h-full min-h-[300px]">
+          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
 
       {/* Dynamic Anti-Piracy Watermark Overlay */}
       <div 

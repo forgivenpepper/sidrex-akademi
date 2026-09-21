@@ -3,33 +3,86 @@ import { createClient } from '@/lib/supabase/server';
 
 export const runtime = 'edge';
 
+// Helper to base64url decode
+function base64UrlToBuffer(b64url: string) {
+  const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+  const binStr = atob(b64);
+  const bytes = new Uint8Array(binStr.length);
+  for (let i = 0; i < binStr.length; i++) {
+    bytes[i] = binStr.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const productId = searchParams.get('productId');
+  const token = searchParams.get('token');
 
-  if (!productId) {
-    return new NextResponse('Missing product ID', { status: 400 });
+  if (!token) {
+    return new NextResponse('Missing token', { status: 401 });
   }
 
-  let videoUrl: string | null = null;
+  let videoUrl: string;
+  let productId: string;
 
   try {
+    const [payloadB64, sigB64] = token.split('.');
+    if (!payloadB64 || !sigB64) throw new Error('Invalid token format');
+
+    const encoder = new TextEncoder();
+    const secret = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'default-secret';
+    const keyData = encoder.encode(secret);
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const signatureBuffer = base64UrlToBuffer(sigB64);
+    const payloadBuffer = encoder.encode(payloadB64);
+
+    const isValid = await crypto.subtle.verify(
+      'HMAC',
+      cryptoKey,
+      signatureBuffer,
+      payloadBuffer
+    );
+
+    if (!isValid) {
+      return new NextResponse('Invalid token signature', { status: 403 });
+    }
+
+    const payloadStr = atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'));
+    const payload = JSON.parse(payloadStr);
+
+    if (Date.now() > payload.exp) {
+      return new NextResponse('Token expired', { status: 403 });
+    }
+
+    productId = payload.p;
+
     if (productId === 'DEMO') {
       videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
     } else {
-      const supabase = await createClient();
-      const { data: product, error } = await supabase
-        .from('products')
-        .select('video_url')
-        .eq('id', productId)
-        .single();
-
-      if (error || !product || !product.video_url) {
-        console.error('Failed to get video URL from DB:', error);
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      const res = await fetch(`${supabaseUrl}/rest/v1/products?id=eq.${productId}&select=video_url`, {
+        headers: {
+          'apikey': supabaseKey!,
+          'Authorization': `Bearer ${supabaseKey!}`
+        }
+      });
+      const data = await res.json();
+      
+      if (!data || data.length === 0 || !data[0].video_url) {
         return new NextResponse('Video not found', { status: 404 });
       }
 
-      videoUrl = product.video_url;
+      videoUrl = data[0].video_url;
     }
 
     // Determine headers to forward (specifically Range for seeking)
@@ -40,7 +93,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch the video from the external source
-    const response = await fetch(videoUrl as string, {
+    const response = await fetch(videoUrl, {
       headers: headersToForward,
     });
 
@@ -65,8 +118,8 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // In Next.js App router, we can return the body stream directly
-    return new NextResponse(response.body, {
+    // Return standard Response for native Edge streaming performance
+    return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
       headers: responseHeaders,
