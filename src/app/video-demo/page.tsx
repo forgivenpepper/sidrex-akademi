@@ -13,7 +13,7 @@ export default function VideoDemoPage() {
         </p>
 
         <SecureVideoPlayer 
-          videoUrl="https://www.w3schools.com/html/mov_bbb.mp4" 
+          productId="DEMO" 
           userEmail="ogrenci@deneme.com" 
         />
         
