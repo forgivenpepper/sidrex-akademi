@@ -181,26 +181,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
             {renderVideoPlayer()}
           </div>
 
-          {/* External Link & YouTube Warning Bar */}
-          {product.video_url && (
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2 text-slate-600">
-                <Info className="w-4 h-4 text-[#58b09c] flex-shrink-0" />
-                <span>
-                  Video oynatıcıda <strong>"Video Kullanılamıyor"</strong> uyarısı alıyorsanız, YouTube Studio ayarlarından videoyu <strong>"Liste Dışı (Unlisted)"</strong> ve <strong>"Sitelerde Gösterime İzin Ver"</strong> konumuna getirin.
-                </span>
-              </div>
-              <a
-                href={product.video_url.startsWith('http') ? product.video_url : `https://${product.video_url}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:text-[#0b2545] font-semibold flex items-center gap-1.5 flex-shrink-0 shadow-sm transition-all"
-              >
-                <span>Videoyu Harici Sekmede Aç</span>
-                <Video className="w-3.5 h-3.5 text-[#58b09c]" />
-              </a>
-            </div>
-          )}
+
 
           {/* Details & Specs Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
