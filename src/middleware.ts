@@ -53,7 +53,8 @@ export async function middleware(request: NextRequest) {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
         const res = await fetch(`${supabaseUrl}/rest/v1/products?id=eq.${productId}&select=video_url`, {
-          headers: { 'apikey': supabaseKey!, 'Authorization': `Bearer ${supabaseKey!}` }
+          headers: { 'apikey': supabaseKey!, 'Authorization': `Bearer ${supabaseKey!}` },
+          cache: 'no-store'
         });
         const data = await res.json();
         if (data && data.length > 0 && data[0].video_url) {

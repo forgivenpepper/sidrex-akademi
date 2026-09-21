@@ -220,7 +220,7 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
               {videoType === 'secure' ? 'Güvenli (Korumalı) Video URL' : videoType === 'youtube' ? 'YouTube Video URL' : 'Vimeo Video URL'}
             </label>
             <input
-              type="url"
+              type="text"
               name="video_url"
               defaultValue={product?.video_url || ''}
               placeholder={

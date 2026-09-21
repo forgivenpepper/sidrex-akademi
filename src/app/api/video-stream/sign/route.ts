@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 // Helper to base64url encode a buffer/uint8array
 function bufferToBase64Url(buffer: ArrayBuffer | Uint8Array) {
