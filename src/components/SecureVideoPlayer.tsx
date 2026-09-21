@@ -44,18 +44,31 @@ export default function SecureVideoPlayer({ productId, userEmail: propUserEmail 
       const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
       const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
       
-      if (isMacScreenshot || isWinScreenshot) {
+      if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen') {
         setIsScreenshotting(true);
-        // Hide the block screen after 4 seconds
         setTimeout(() => setIsScreenshotting(false), 4000);
       }
     };
 
+    // When Snipping Tool opens (Win+Shift+S), the browser immediately loses focus.
+    const handleBlur = () => {
+      setIsScreenshotting(true);
+    };
+
+    const handleFocus = () => {
+      // Keep it hidden for a split second after they return to prevent rapid snips
+      setTimeout(() => setIsScreenshotting(false), 500);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
     };
   }, []);
 
