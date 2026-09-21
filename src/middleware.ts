@@ -98,7 +98,6 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
   // If user is not logged in and not on auth page, redirect to login
