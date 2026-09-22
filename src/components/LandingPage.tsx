@@ -11,7 +11,13 @@ import { Profile, SiteSettings } from '@/lib/types/database';
 export default function LandingPage({ products, profile, sections, settings }: { products?: any[], profile?: Profile | null, sections?: any[], settings?: SiteSettings | null }) {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [activeSliderId, setActiveSliderId] = useState<string | null>(null);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    if (sections && sections.length > 0) {
+      return { [sections[0].id]: true };
+    }
+    return {};
+  });
   const productsRef = useRef<HTMLDivElement>(null);
 
   const displayItems = products && products.length > 0 
@@ -28,6 +34,14 @@ export default function LandingPage({ products, profile, sections, settings }: {
 
   const handleCategoryClick = (id: string) => {
     setSelectedSectionId(id);
+    if (id !== 'all') {
+      setOpenSections({ [id]: true });
+    } else {
+      // If 'all' is clicked, maybe keep the first one open
+      if (sections && sections.length > 0) {
+        setOpenSections({ [sections[0].id]: true });
+      }
+    }
     if (productsRef.current) {
       productsRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -36,7 +50,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
   const toggleSection = (id: string) => {
     setOpenSections(prev => ({
       ...prev,
-      [id]: prev[id] === undefined ? false : !prev[id]
+      [id]: !prev[id]
     }));
   };
 
@@ -260,7 +274,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                         <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-3 py-1 rounded-full">
                           {secItems.length} Ürün
                         </span>
-                        <div className={`transform transition-transform duration-300 ${openSections[sec.id] !== false ? 'rotate-180' : ''}`}>
+                        <div className={`transform transition-transform duration-300 ${openSections[sec.id] ? 'rotate-180' : ''}`}>
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
                             <polyline points="6 9 12 15 18 9"></polyline>
                           </svg>
@@ -268,7 +282,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                       </div>
                     </div>
                     
-                    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-all duration-500 ease-in-out ${openSections[sec.id] !== false ? 'p-6 opacity-100' : 'h-0 opacity-0 overflow-hidden py-0 px-6'}`}>
+                    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-all duration-500 ease-in-out ${openSections[sec.id] ? 'p-6 opacity-100' : 'h-0 opacity-0 overflow-hidden py-0 px-6'}`}>
                       {secItems.map((product, idx) => {
                         const title = product.title || product.name;
                         const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
@@ -296,9 +310,56 @@ export default function LandingPage({ products, profile, sections, settings }: {
                             </div>
                             <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1 font-fraunces">{title}</h4>
                             <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
-                            <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
-                              İncele
-                            </button>
+                            <div className="flex gap-2">
+                              <button className="flex-1 bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center">
+                                İncele
+                              </button>
+                              {product.product_videos && product.product_videos.length > 0 && (
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveSliderId(activeSliderId === product.id ? null : product.id);
+                                  }}
+                                  className="flex-1 bg-white border border-[#0b2545] text-[#0b2545] hover:bg-slate-50 text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center whitespace-nowrap flex items-center justify-center gap-1"
+                                >
+                                  <PlayCircle className="w-3 h-3" />
+                                  Videolar ({product.product_videos.length})
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Inline Video Slider */}
+                            {activeSliderId === product.id && product.product_videos && product.product_videos.length > 0 && (
+                              <div 
+                                className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {product.product_videos.map((vid: any) => (
+                                  <div 
+                                    key={vid.id} 
+                                    onClick={() => setSelectedProduct({
+                                      id: product.id,
+                                      title: vid.title,
+                                      description: product.description || '',
+                                      image_url: vid.thumbnail_url || image,
+                                      video_url: vid.video_url
+                                    })}
+                                    className="shrink-0 w-24 h-16 bg-slate-900 rounded-lg cursor-pointer overflow-hidden relative group border border-slate-200"
+                                  >
+                                    {vid.thumbnail_url ? (
+                                      <img src={vid.thumbnail_url} alt={vid.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-500">
+                                        <PlayCircle className="w-6 h-6" />
+                                      </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                      <span className="text-white text-[9px] font-bold text-center px-1 truncate w-full shadow-sm">{vid.title}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -353,9 +414,56 @@ export default function LandingPage({ products, profile, sections, settings }: {
                       </div>
                       <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1 font-fraunces">{title}</h4>
                       <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
-                      <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
-                        İncele
-                      </button>
+                      <div className="flex gap-2">
+                        <button className="flex-1 bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center">
+                          İncele
+                        </button>
+                        {product.product_videos && product.product_videos.length > 0 && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveSliderId(activeSliderId === product.id ? null : product.id);
+                            }}
+                            className="flex-1 bg-white border border-[#0b2545] text-[#0b2545] hover:bg-slate-50 text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center whitespace-nowrap flex items-center justify-center gap-1"
+                          >
+                            <PlayCircle className="w-3 h-3" />
+                            Videolar ({product.product_videos.length})
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Inline Video Slider */}
+                      {activeSliderId === product.id && product.product_videos && product.product_videos.length > 0 && (
+                        <div 
+                          className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {product.product_videos.map((vid: any) => (
+                            <div 
+                              key={vid.id} 
+                              onClick={() => setSelectedProduct({
+                                id: product.id,
+                                title: vid.title,
+                                description: product.description || '',
+                                image_url: vid.thumbnail_url || image,
+                                video_url: vid.video_url
+                              })}
+                              className="shrink-0 w-24 h-16 bg-slate-900 rounded-lg cursor-pointer overflow-hidden relative group border border-slate-200"
+                            >
+                              {vid.thumbnail_url ? (
+                                <img src={vid.thumbnail_url} alt={vid.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-500">
+                                  <PlayCircle className="w-6 h-6" />
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                <span className="text-white text-[9px] font-bold text-center px-1 truncate w-full shadow-sm">{vid.title}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

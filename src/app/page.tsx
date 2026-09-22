@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   const { data: products } = await supabase
     .from('products')
-    .select('*, sections(id, title)')
+    .select('*, sections(id, title), product_videos(*)')
     .eq('is_published', true)
     .order('created_at', { ascending: false });
 

@@ -36,6 +36,19 @@ export interface Section {
 
 export type ProductSpecs = Record<string, string>;
 
+export interface ProductVideo {
+  id: string;
+  product_id: string;
+  title: string;
+  video_type: VideoType;
+  video_url: string | null;
+  thumbnail_url: string | null;
+  storage_video_path: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Product {
   id: string;
   section_id: string | null;
@@ -51,6 +64,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   sections?: Section | null;
+  product_videos?: ProductVideo[];
 }
 
 export interface SectionClick {

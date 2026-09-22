@@ -47,6 +47,20 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
   const [videoType, setVideoType] = useState<VideoType>(product?.video_type || 'youtube');
   const [isPublished, setIsPublished] = useState<boolean>(product?.is_published ?? true);
 
+  const [additionalVideos, setAdditionalVideos] = useState<any[]>(product?.product_videos || []);
+
+  const addVideoRow = () => {
+    setAdditionalVideos([...additionalVideos, { id: `vid-${Date.now()}`, title: '', video_type: 'youtube', video_url: '', thumbnail_url: '' }]);
+  };
+
+  const removeVideoRow = (id: string) => {
+    setAdditionalVideos(additionalVideos.filter((v) => v.id !== id));
+  };
+
+  const updateVideoRow = (id: string, field: string, val: string) => {
+    setAdditionalVideos(additionalVideos.map((v) => (v.id === id ? { ...v, [field]: val } : v)));
+  };
+
   const addSpecRow = () => {
     setSpecs([...specs, { id: `spec-${Date.now()}`, key: '', value: '' }]);
   };
@@ -276,6 +290,99 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Ek Videolar (Galeri) */}
+      <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-6">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className="text-base font-semibold text-white flex items-center gap-2">
+            <Video className="w-5 h-5 text-indigo-400" />
+            Ek Videolar (Galeri)
+          </h2>
+          <button
+            type="button"
+            onClick={addVideoRow}
+            className="px-3 py-1.5 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-indigo-500/20"
+          >
+            <Plus className="w-4 h-4" />
+            Yeni Video Ekle
+          </button>
+        </div>
+
+        {additionalVideos.length === 0 ? (
+          <p className="text-xs text-gray-500 italic text-center py-4">Henüz ek video eklenmemiş.</p>
+        ) : (
+          <div className="space-y-4">
+            <input type="hidden" name="additional_videos_count" value={additionalVideos.length} />
+            {additionalVideos.map((vid, idx) => (
+              <div key={vid.id} className="p-4 bg-slate-900 border border-slate-700 rounded-xl relative">
+                <input type="hidden" name={`add_vid_id_${idx}`} value={vid.id} />
+                
+                <button
+                  type="button"
+                  onClick={() => removeVideoRow(vid.id)}
+                  className="absolute top-4 right-4 p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Video Başlığı</label>
+                    <input
+                      type="text"
+                      name={`add_vid_title_${idx}`}
+                      value={vid.title}
+                      onChange={(e) => updateVideoRow(vid.id, 'title', e.target.value)}
+                      placeholder="Örn: Kurulum Videosu"
+                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Video Tipi</label>
+                    <select
+                      name={`add_vid_type_${idx}`}
+                      value={vid.video_type}
+                      onChange={(e) => updateVideoRow(vid.id, 'video_type', e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    >
+                      <option value="youtube">YouTube</option>
+                      <option value="link">MP4 Linki</option>
+                      <option value="embed">İframe Kodu</option>
+                    </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Video Linki / Kodu</label>
+                    <input
+                      type="text"
+                      name={`add_vid_url_${idx}`}
+                      value={vid.video_url || ''}
+                      onChange={(e) => updateVideoRow(vid.id, 'video_url', e.target.value)}
+                      placeholder="https://..."
+                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Kapak Görseli URL (Opsiyonel)</label>
+                    <input
+                      type="text"
+                      name={`add_vid_thumb_${idx}`}
+                      value={vid.thumbnail_url || ''}
+                      onChange={(e) => updateVideoRow(vid.id, 'thumbnail_url', e.target.value)}
+                      placeholder="https://.../resim.png"
+                      className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* DYNAMIC SPECS MANAGER CARD */}

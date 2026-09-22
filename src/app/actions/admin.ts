@@ -200,12 +200,46 @@ export async function saveProductAction(prevState: any, formData: FormData) {
     is_published,
   };
 
+  let productId = id;
   if (id) {
     const { error } = await supabase.from('products').update(payload).eq('id', id);
     if (error) return { error: 'Ürün güncellenemedi: ' + error.message };
   } else {
-    const { error } = await supabase.from('products').insert(payload);
+    const { data, error } = await supabase.from('products').insert(payload).select().single();
     if (error) return { error: 'Ürün eklenemedi: ' + error.message };
+    productId = data.id;
+  }
+
+  // Ek Videoları İşle
+  const additionalVideosCount = parseInt(formData.get('additional_videos_count') as string || '0', 10);
+  
+  if (productId) {
+    // Mevcut videoları sil (tam güncellemeyi garantilemek için)
+    await supabase.from('product_videos').delete().eq('product_id', productId);
+    
+    const videosToInsert = [];
+    for (let i = 0; i < additionalVideosCount; i++) {
+      const vidTitle = formData.get(`add_vid_title_${i}`) as string;
+      const vidType = formData.get(`add_vid_type_${i}`) as VideoType;
+      const vidUrl = formData.get(`add_vid_url_${i}`) as string;
+      const vidThumb = formData.get(`add_vid_thumb_${i}`) as string;
+      
+      if (vidTitle && vidUrl) {
+        videosToInsert.push({
+          product_id: productId,
+          title: vidTitle,
+          video_type: vidType,
+          video_url: vidUrl,
+          thumbnail_url: vidThumb,
+          sort_order: i
+        });
+      }
+    }
+    
+    if (videosToInsert.length > 0) {
+      const { error: vidError } = await supabase.from('product_videos').insert(videosToInsert);
+      if (vidError) console.error('Ek videolar eklenemedi:', vidError);
+    }
   }
 
   revalidatePath('/admin/products');
