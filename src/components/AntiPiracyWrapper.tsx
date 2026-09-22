@@ -93,8 +93,9 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       let devToolsOpen = false;
 
       // 1. Window size check (detects docked DevTools)
-      const widthThreshold = window.outerWidth - window.innerWidth > 160;
-      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      // Lowered threshold to 100 to catch smaller DevTools instances on laptops
+      const widthThreshold = window.outerWidth - window.innerWidth > 100;
+      const heightThreshold = window.outerHeight - window.innerHeight > 100;
       if (widthThreshold || heightThreshold) {
         devToolsOpen = true;
       }
