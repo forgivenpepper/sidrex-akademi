@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: "Sidrex Akademi | Ürün & Video Kataloğu",
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="tr">
       <body className="bg-[#f8fafc] text-[#0b2545] min-h-screen antialiased">
         {children}
+        <CookieBanner />
       </body>
     </html>
   );
