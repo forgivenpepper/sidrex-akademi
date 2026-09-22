@@ -86,22 +86,36 @@ export default function LandingPage({ products, profile, sections }: { products?
             Sidrex<br />Akademi
           </h1>
           
-          {/* Categories in Hero */}
+          {/* Categories in Hero - Netflix Style Boxes */}
           {sections && sections.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-3 mt-12 max-w-4xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-4 mt-12 max-w-5xl mx-auto pb-4">
               <button 
                 onClick={() => handleCategoryClick('all')}
-                className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md transition-all ${selectedSectionId === 'all' ? 'bg-[#58b09c] text-white border-2 border-[#58b09c]' : 'bg-white/10 text-white border-2 border-white/30 hover:bg-white/20'}`}
+                className={`relative group w-32 h-20 md:w-40 md:h-24 rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:z-20 ${selectedSectionId === 'all' ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0b2545]' : ''}`}
               >
-                Tüm Kategoriler
+                <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-300 ${selectedSectionId === 'all' ? 'from-[#58b09c] to-[#3a7567] opacity-90' : 'from-slate-800 to-slate-900 opacity-70 group-hover:opacity-90'}`} />
+                <div className="absolute inset-0 flex items-center justify-center p-3 text-center">
+                  <span className="text-white font-bold text-sm md:text-base drop-shadow-md leading-tight">
+                    Tüm Kategoriler
+                  </span>
+                </div>
               </button>
+
               {sections.map(sec => (
                 <button 
                   key={sec.id}
                   onClick={() => handleCategoryClick(sec.id)}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md transition-all ${selectedSectionId === sec.id ? 'bg-[#58b09c] text-white border-2 border-[#58b09c]' : 'bg-white/10 text-white border-2 border-white/30 hover:bg-white/20'}`}
+                  className={`relative group w-32 h-20 md:w-40 md:h-24 rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:z-20 ${selectedSectionId === sec.id ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0b2545]' : ''}`}
                 >
-                  {sec.title}
+                  <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-300 ${selectedSectionId === sec.id ? 'from-[#58b09c] to-[#3a7567] opacity-90' : 'from-slate-800 to-slate-900 opacity-60 group-hover:opacity-80'}`} />
+                  {/* Subtle placeholder image effect behind gradient */}
+                  <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] opacity-20" />
+                  
+                  <div className="absolute inset-0 flex items-center justify-center p-3 text-center">
+                    <span className="text-white font-bold text-sm md:text-base drop-shadow-md leading-tight">
+                      {sec.title}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
