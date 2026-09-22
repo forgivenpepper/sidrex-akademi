@@ -5,7 +5,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PlayCircle, ShieldCheck, HelpCircle, ArrowRight, User } from 'lucide-react';
 
-export default function LandingPage() {
+export default function LandingPage({ products }: { products?: any[] }) {
+  const displayItems = products && products.length > 0 
+    ? products.map(p => ({
+        id: p.id,
+        title: p.name,
+        desc: p.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.',
+        image: p.image_url || '/images/product_placeholder.png'
+      }))
+    : [
+        { title: "Bitkisel Ürünler", desc: "Doğanın gücüyle tasarlanmış bitkisel çözümler.", image: "/images/product_placeholder.png" },
+        { title: "Çocuk Ürünleri", desc: "Çocukların hassas metabolizmasına uygun, tam doğal formüller.", image: "/images/product_placeholder.png" },
+        { title: "Boğaz/Ağız Ürünleri", desc: "Doğal bileşenleriyle boğaz ve ağız bakımında uzman çözümler.", image: "/images/product_placeholder.png" },
+        { title: "Fonksiyonel İçecekler", desc: "Günlük rutininize aktif ve sağlıklı bir dokunuş.", image: "/images/product_placeholder.png" },
+        { title: "Kadın-Erkek", desc: "Her cinsiyetin özel gereksinimlerine göre tasarlanmış çözümler.", image: "/images/product_placeholder.png" },
+        { title: "Kolajenler", desc: "Cilt, saç, tırnak ve eklem sağlığı için benzersiz destek.", image: "/images/product_placeholder.png" },
+        { title: "Özel Takviyeler", desc: "İhtiyaca yönelik, fonksiyonel ve koruyucu çözümler.", image: "/images/product_placeholder.png" },
+        { title: "Vitamin-Mineral", desc: "Vücudunuzun ihtiyacı olan hayati bileşenler.", image: "/images/product_placeholder.png" }
+      ];
+
   return (
     <div className="min-h-screen bg-white font-sans text-[#0b2545] selection:bg-[#58b09c] selection:text-white">
       {/* HEADER */}
@@ -136,27 +154,18 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { title: "Bitkisel Ürünler", desc: "Doğanın gücüyle tasarlanmış bitkisel çözümler." },
-              { title: "Çocuk Ürünleri", desc: "Çocukların hassas metabolizmasına uygun, tam doğal formüller." },
-              { title: "Boğaz/Ağız Ürünleri", desc: "Doğal bileşenleriyle boğaz ve ağız bakımında uzman çözümler." },
-              { title: "Fonksiyonel İçecekler", desc: "Günlük rutininize aktif ve sağlıklı bir dokunuş." },
-              { title: "Kadın-Erkek", desc: "Her cinsiyetin özel gereksinimlerine göre tasarlanmış çözümler." },
-              { title: "Kolajenler", desc: "Cilt, saç, tırnak ve eklem sağlığı için benzersiz destek." },
-              { title: "Özel Takviyeler", desc: "İhtiyaca yönelik, fonksiyonel ve koruyucu çözümler." },
-              { title: "Vitamin-Mineral", desc: "Vücudunuzun ihtiyacı olan hayati bileşenler." }
-            ].map((category, idx) => (
+            {displayItems.map((category, idx) => (
               <div key={idx} className="group">
                 <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
                   <Image 
-                    src="/images/product_placeholder.png"
+                    src={category.image}
                     alt={category.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <h4 className="font-bold text-[#0b2545] mb-1">{category.title}</h4>
-                <p className="text-xs text-slate-500 mb-3 min-h-[32px]">{category.desc}</p>
+                <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{category.title}</h4>
+                <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{category.desc}</p>
                 <Link href="/login">
                   <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
                     İncele
