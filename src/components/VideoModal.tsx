@@ -14,8 +14,8 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   // Direct DOM ref - No React state delay, this is INSTANT
   const ssOverlayRef = useRef<HTMLDivElement>(null);
   
-  // Start with the main product video or the first gallery video
-  const initialVidId = product.video_url ? 'main' : (product.product_videos?.[0]?.id || 'none');
+  // Start with the main product video or the specified initial video
+  const initialVidId = product.initialVideoId || (product.video_url ? 'main' : (product.product_videos?.[0]?.id || 'none'));
   const [activeVideoId, setActiveVideoId] = useState<string>(initialVidId);
 
   useEffect(() => {

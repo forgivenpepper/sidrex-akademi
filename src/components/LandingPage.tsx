@@ -290,11 +290,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
                         
                         return (
                           <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
-                            id: product.id || String(idx),
-                            title: title,
-                            description: desc,
-                            image_url: image,
-                            video_url: product.video_url
+                            ...product,
+                            initialVideoId: 'main'
                           })}>
                             <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
                               <img 
@@ -338,11 +335,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
                                   <div 
                                     key={vid.id} 
                                     onClick={() => setSelectedProduct({
-                                      id: product.id,
-                                      title: vid.title,
-                                      description: product.description || '',
-                                      image_url: vid.thumbnail_url || image,
-                                      video_url: vid.video_url
+                                      ...product,
+                                      initialVideoId: vid.id
                                     })}
                                     className="shrink-0 w-24 h-16 bg-slate-900 rounded-lg cursor-pointer overflow-hidden relative group border border-slate-200"
                                   >
