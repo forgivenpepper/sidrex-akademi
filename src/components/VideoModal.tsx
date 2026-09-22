@@ -30,47 +30,110 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   const mailtoLink = `mailto:info@sidrex.com?subject=${emailSubject}&body=${emailBody}`;
 
   const renderVideoPlayer = () => {
-    if (product.video_type === 'youtube' && product.video_url) {
-      let embedUrl = product.video_url;
-      const ytMatch = product.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-      if (ytMatch && ytMatch[1]) {
-        embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
-      }
+    if (!product.video_url && !product.storage_video_path) {
       return (
-        <iframe
-          src={embedUrl}
-          title={product.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full rounded-2xl"
+        <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
+          <Video className="w-12 h-12 mb-3 opacity-80" />
+          <p className="font-semibold text-slate-600 text-sm">Bu ürün için önizleme videosu bulunmamaktadır.</p>
+        </div>
+      );
+    }
+
+    // 0. SECURE MODE (Gizli / Korumalı Video Streaming)
+    if (product.video_type === 'secure') {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
+          <SecureVideoPlayer productId={product.id} />
+        </div>
+      );
+    }
+
+    const url = (product.video_url || '').trim();
+
+    // 1. Iframe Code check (if user pasted raw <iframe> html)
+    if (url.includes('<iframe')) {
+      return (
+        <div
+          className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
+          dangerouslySetInnerHTML={{ __html: url }}
         />
       );
     }
 
-    if (product.video_type === 'vimeo' && product.video_url) {
-      let embedUrl = product.video_url;
-      const vimeoMatch = product.video_url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    // 2. Google Drive Links (drive.google.com)
+    if (url.includes('drive.google.com')) {
+      const gDriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (gDriveMatch && gDriveMatch[1]) {
+        const embedUrl = `https://drive.google.com/file/d/${gDriveMatch[1]}/preview`;
+        return (
+          <AntiPiracyWrapper>
+            <iframe
+              src={embedUrl}
+              title={product.title}
+              allow="autoplay"
+              allowFullScreen
+              className="w-full h-full rounded-2xl"
+            />
+          </AntiPiracyWrapper>
+        );
+      }
+    }
+
+    // 3. YouTube Links & Raw 11-char IDs
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|watch\?.+&v=))([\w-]{11})/) ||
+      (url.length === 11 && url.match(/^[\w-]{11}$/) ? [null, url] : null);
+
+    if (ytMatch && ytMatch[1]) {
+      const embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
+      return (
+        <AntiPiracyWrapper>
+          <iframe
+            src={embedUrl}
+            title={product.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full rounded-2xl"
+          />
+        </AntiPiracyWrapper>
+      );
+    }
+
+    // 4. Vimeo Links
+    if (url.includes('vimeo.com') || product.video_type === 'vimeo') {
+      const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/);
+      const hMatch = url.match(/[?&]h=([a-zA-Z0-9]+)/);
+
       if (vimeoMatch && vimeoMatch[1]) {
-        embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+        let hParam = '';
+        if (hMatch && hMatch[1]) {
+          hParam = `&h=${hMatch[1]}`;
+        } else if (vimeoMatch[2]) {
+          hParam = `&h=${vimeoMatch[2]}`;
+        }
+        const embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1${hParam}`;
+        return (
+          <AntiPiracyWrapper>
+            <iframe
+              src={embedUrl}
+              title={product.title}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full rounded-2xl"
+            />
+          </AntiPiracyWrapper>
+        );
       }
-      return (
-        <iframe
-          src={embedUrl}
-          title={product.title}
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full rounded-2xl"
-        />
-      );
     }
 
-    if (product.video_type === 'upload' && (product.video_url || product.storage_video_path)) {
+    // 5. Uploaded MP4 or Direct MP4/Video File
+    if (product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
       return (
         <video
           controls
           autoPlay
+          playsInline
           className="w-full h-full object-cover rounded-2xl"
-          src={product.video_url || ''}
+          src={url || product.storage_video_path || ''}
         >
           Tarayıcınız video oynatmayı desteklemiyor.
         </video>
@@ -88,23 +151,19 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
           </AntiPiracyWrapper>
         );
       }
+    }
+
+    // 6. Generic Fallback iframe for any other URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
       return (
         <AntiPiracyWrapper>
           <iframe
-            src={product.video_url}
+            src={url}
             title={product.title}
             allowFullScreen
             className="w-full h-full rounded-2xl"
           />
         </AntiPiracyWrapper>
-      );
-    }
-
-    if (product.video_type === 'secure' && product.video_url) {
-      return (
-        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
-           <SecureVideoPlayer productId={product.id} />
-        </div>
       );
     }
 
@@ -144,6 +203,8 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
           <div className="relative w-full aspect-video rounded-2xl bg-slate-900 shadow-lg border border-slate-200 overflow-hidden">
             {renderVideoPlayer()}
           </div>
+
+
 
           {/* Details & Specs Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">

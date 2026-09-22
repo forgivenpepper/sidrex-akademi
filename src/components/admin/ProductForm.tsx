@@ -80,6 +80,9 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
       {product?.thumbnail_url && (
         <input type="hidden" name="existing_thumbnail_url" value={product.thumbnail_url} />
       )}
+      {product?.video_url && (
+        <input type="hidden" name="existing_video_url" value={product.video_url} />
+      )}
       {product?.storage_video_path && (
         <input type="hidden" name="existing_storage_video_path" value={product.storage_video_path} />
       )}

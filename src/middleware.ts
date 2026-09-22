@@ -58,9 +58,17 @@ export async function middleware(request: NextRequest) {
         });
         const data = await res.json();
         if (data && data.length > 0 && data[0].video_url) {
-          videoUrl = data[0].video_url;
+          videoUrl = data[0].video_url.trim();
         } else {
           return new NextResponse('Not found', { status: 404 });
+        }
+      }
+
+      // If Google Drive link, convert to /preview for Edge rewrite
+      if (videoUrl.includes('drive.google.com')) {
+        const gDriveMatch = videoUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || videoUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (gDriveMatch && gDriveMatch[1]) {
+          videoUrl = `https://drive.google.com/file/d/${gDriveMatch[1]}/preview`;
         }
       }
 
@@ -98,7 +106,6 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
   // If user is not logged in and not on auth page, redirect to login
