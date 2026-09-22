@@ -64,14 +64,21 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       setTimeout(() => { isRightClicking = false; }, 200);
     };
 
-    const handleBlur = () => {
+    const handleBlur = (e: FocusEvent) => {
+      // Since we use capture:true, we catch ALL blur events (even clicking a button). 
+      // We ONLY care if the WINDOW itself is blurred.
+      if (e.target !== window) return;
+
       requestAnimationFrame(() => {
         if (isRightClicking) return; // Ignore blur caused by right-click
         if (!document.hasFocus()) showOverlay();
       });
     };
     // When user returns — keep overlay for 4 seconds
-    const handleFocus = () => { hideOverlay(4000); };
+    const handleFocus = (e: FocusEvent) => { 
+      if (e.target !== window) return;
+      hideOverlay(4000); 
+    };
 
     // When tab becomes hidden
     const handleVisibility = () => {
