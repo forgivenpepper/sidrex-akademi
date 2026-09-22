@@ -89,13 +89,16 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     window.addEventListener('keydown', handleKeyDown, true);
 
     // ANTI-DEBUGGING TRAP: Freeze DevTools if opened manually from browser menu
+    // Use Function constructor to prevent Next.js/SWC minifier from stripping the debugger keyword
     const debuggerInterval = setInterval(() => {
       const start = performance.now();
-      debugger; // If DevTools is open, execution STOPS here immediately
+      try {
+        (function() { return Function('debugger')(); })();
+      } catch (e) {}
       const end = performance.now();
       // If it took more than 100ms, it means DevTools paused it!
       if (end - start > 100) {
-        setIsScreenshotting(true); // Black out screen if they try to debug
+        setIsScreenshotting(true); // Black out screen and unmount DOM
       }
     }, 1000);
 
@@ -117,9 +120,9 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
       style={{ isolation: 'isolate', userSelect: 'none' }}
     >
-      {/* Target Content (Video or Iframe) */}
+      {/* Target Content (Video or Iframe) - UNMOUNT completely when devtools/screenshot triggers so source code disappears! */}
       <div className="w-full h-full" style={{ pointerEvents: 'auto' }}>
-        {children}
+        {!isScreenshotting && children}
       </div>
 
       {/* FORENSIC HIDDEN WATERMARK (Almost invisible, repeating grid) */}
