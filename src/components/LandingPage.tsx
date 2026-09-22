@@ -91,10 +91,10 @@ export default function LandingPage({ products, profile, sections }: { products?
             <div className="flex flex-wrap justify-center gap-4 mt-12 max-w-5xl mx-auto pb-8">
               <button 
                 onClick={() => handleCategoryClick('all')}
-                className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === 'all' ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]' : ''}`}
+                className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === 'all' ? 'ring-1 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : ''}`}
               >
-                <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === 'all' ? 'bg-[#58b09c]/90 backdrop-blur-md' : 'bg-white/10 backdrop-blur-md group-hover:bg-white/20'}`} />
-                <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === 'all' ? 'border-[#58b09c]' : 'border-white/20 group-hover:border-white/40'}`} />
+                <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === 'all' ? 'bg-[#58b09c]/60 backdrop-blur-sm' : 'bg-white/5 backdrop-blur-sm group-hover:bg-white/10'}`} />
+                <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === 'all' ? 'border-[#58b09c]/50' : 'border-white/10 group-hover:border-white/20'}`} />
                 <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
                   <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
                     Tüm Kategoriler
@@ -106,10 +106,10 @@ export default function LandingPage({ products, profile, sections }: { products?
                 <button 
                   key={sec.id}
                   onClick={() => handleCategoryClick(sec.id)}
-                  className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === sec.id ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]' : ''}`}
+                  className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === sec.id ? 'ring-1 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : ''}`}
                 >
-                  <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === sec.id ? 'bg-[#58b09c]/90 backdrop-blur-md' : 'bg-white/10 backdrop-blur-md group-hover:bg-white/20'}`} />
-                  <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === sec.id ? 'border-[#58b09c]' : 'border-white/20 group-hover:border-white/40'}`} />
+                  <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === sec.id ? 'bg-[#58b09c]/60 backdrop-blur-sm' : 'bg-white/5 backdrop-blur-sm group-hover:bg-white/10'}`} />
+                  <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === sec.id ? 'border-[#58b09c]/50' : 'border-white/10 group-hover:border-white/20'}`} />
                   <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
                     <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
                       {sec.title}
