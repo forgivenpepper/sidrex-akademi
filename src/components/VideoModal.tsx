@@ -3,7 +3,6 @@
 import { Product } from '@/lib/types/database';
 import { X, Mail, Video, Info } from 'lucide-react';
 import { useEffect } from 'react';
-import SecureVideoPlayer from './SecureVideoPlayer';
 import AntiPiracyWrapper from './AntiPiracyWrapper';
 
 interface VideoModalProps {
@@ -35,15 +34,6 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
         <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
           <Video className="w-12 h-12 mb-3 opacity-80" />
           <p className="font-semibold text-slate-600 text-sm">Bu ürün için önizleme videosu bulunmamaktadır.</p>
-        </div>
-      );
-    }
-
-    // 0. SECURE MODE
-    if (product.video_type === 'secure') {
-      return (
-        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden relative" style={{ isolation: 'isolate' }}>
-          <SecureVideoPlayer productId={product.id} />
         </div>
       );
     }

@@ -15,8 +15,7 @@ import {
   FileImage,
   Save,
   CheckSquare,
-  Square,
-  Shield
+  Square
 } from 'lucide-react';
 
 interface ProductFormProps {
@@ -159,12 +158,11 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
           <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-3">
             Video Kaynağı Tipi
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {[
               { type: 'youtube', label: 'YouTube', icon: Youtube },
-              { type: 'link', label: 'Link (MP4/Video)', icon: LinkIcon },
+              { type: 'link', label: 'Link (MP4 / Video URL)', icon: LinkIcon },
               { type: 'embed', label: 'Embed İframe Kodu', icon: Code },
-              { type: 'secure', label: 'Korumalı Video URL', icon: Shield },
             ].map((item) => {
               const Icon = item.icon;
               const isSelected = videoType === item.type;
@@ -204,11 +202,7 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
         ) : (
           <div>
             <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              {videoType === 'youtube'
-                ? 'YouTube Video Linki'
-                : videoType === 'link'
-                ? 'Video Linki (MP4, WebM veya herhangi bir video URL)'
-                : 'Korumalı Video URL'}
+              {videoType === 'youtube' ? 'YouTube Video Linki' : 'Video Linki (MP4, WebM veya herhangi bir video URL)'}
             </label>
             <input
               type="text"
@@ -217,15 +211,13 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
               placeholder={
                 videoType === 'youtube'
                   ? 'https://www.youtube.com/watch?v=XXXXXXXXXXX'
-                  : videoType === 'link'
-                  ? 'https://example.com/video.mp4'
-                  : 'https://sunucunuz.com/gizli-video.mp4'
+                  : 'https://example.com/video.mp4'
               }
               className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {videoType === 'link' && (
               <p className="text-xs text-slate-400 mt-1.5">
-                💡 MP4, WebM linklerini buraya yapıştırın. Video direkt oynatılır ve sağ tık koruması otomatik uygulanır.
+                💡 MP4, WebM linklerini buraya yapıştırın. Video direkt oynatılır, sağ tık ve indirme engellidir.
               </p>
             )}
           </div>

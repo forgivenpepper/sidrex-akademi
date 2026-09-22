@@ -1,6 +1,6 @@
 export type UserRole = 'admin' | 'customer';
 
-export type VideoType = 'embed' | 'upload' | 'youtube' | 'link' | 'secure';
+export type VideoType = 'embed' | 'upload' | 'youtube' | 'link';
 
 export interface Profile {
   id: string;
