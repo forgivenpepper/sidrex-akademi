@@ -4,6 +4,7 @@ import { Product } from '@/lib/types/database';
 import { X, Mail, Video, Info } from 'lucide-react';
 import { useEffect } from 'react';
 import SecureVideoPlayer from './SecureVideoPlayer';
+import AntiPiracyWrapper from './AntiPiracyWrapper';
 
 interface VideoModalProps {
   product: Product | null;
@@ -79,19 +80,23 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     if (product.video_type === 'embed' && product.video_url) {
       if (product.video_url.includes('<iframe')) {
         return (
-          <div
-            className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
-            dangerouslySetInnerHTML={{ __html: product.video_url }}
-          />
+          <AntiPiracyWrapper>
+            <div
+              className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
+              dangerouslySetInnerHTML={{ __html: product.video_url }}
+            />
+          </AntiPiracyWrapper>
         );
       }
       return (
-        <iframe
-          src={product.video_url}
-          title={product.title}
-          allowFullScreen
-          className="w-full h-full rounded-2xl"
-        />
+        <AntiPiracyWrapper>
+          <iframe
+            src={product.video_url}
+            title={product.title}
+            allowFullScreen
+            className="w-full h-full rounded-2xl"
+          />
+        </AntiPiracyWrapper>
       );
     }
 
