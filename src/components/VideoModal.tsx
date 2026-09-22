@@ -39,10 +39,10 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
-    // 0. SECURE MODE (Gizli / Korumalı Video Streaming)
+    // 0. SECURE MODE
     if (product.video_type === 'secure') {
       return (
-        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden p-0 m-0 relative" style={{ isolation: 'isolate' }}>
+        <div className="w-full h-full flex items-center justify-center bg-black rounded-2xl overflow-hidden relative" style={{ isolation: 'isolate' }}>
           <SecureVideoPlayer productId={product.id} />
         </div>
       );
@@ -50,41 +50,27 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
 
     const url = (product.video_url || '').trim();
 
-    // 1. Iframe Code check (if user pasted raw <iframe> html)
-    if (url.includes('<iframe')) {
+    // 1. Embed iframe raw kodu
+    if (product.video_type === 'embed' && url) {
       return (
-        <div
-          className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
-          dangerouslySetInnerHTML={{ __html: url }}
-        />
+        <AntiPiracyWrapper>
+          <div
+            className="w-full h-full flex items-center justify-center [&>iframe]:w-full [&>iframe]:h-full"
+            dangerouslySetInnerHTML={{ __html: url }}
+          />
+        </AntiPiracyWrapper>
       );
     }
 
-    // 2. Google Drive Links (drive.google.com)
-    if (url.includes('drive.google.com')) {
-      const gDriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (gDriveMatch && gDriveMatch[1]) {
-        const embedUrl = `https://drive.google.com/file/d/${gDriveMatch[1]}/preview`;
-        return (
-          <AntiPiracyWrapper>
-            <iframe
-              src={embedUrl}
-              title={product.title}
-              allow="autoplay"
-              allowFullScreen
-              className="w-full h-full rounded-2xl"
-            />
-          </AntiPiracyWrapper>
-        );
-      }
-    }
-
-    // 3. YouTube Links & Raw 11-char IDs
+    // 2. YouTube
     const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|watch\?.+&v=))([\w-]{11})/) ||
       (url.length === 11 && url.match(/^[\w-]{11}$/) ? [null, url] : null);
 
-    if (ytMatch && ytMatch[1]) {
-      const embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
+    if (product.video_type === 'youtube' || ytMatch) {
+      const videoId = ytMatch ? ytMatch[1] : null;
+      const embedUrl = videoId
+        ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
+        : url;
       return (
         <AntiPiracyWrapper>
           <iframe
@@ -98,66 +84,31 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
-    // 4. Vimeo Links
-    if (url.includes('vimeo.com') || product.video_type === 'vimeo') {
-      const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/);
-      const hMatch = url.match(/[?&]h=([a-zA-Z0-9]+)/);
-
-      if (vimeoMatch && vimeoMatch[1]) {
-        let hParam = '';
-        if (hMatch && hMatch[1]) {
-          hParam = `&h=${hMatch[1]}`;
-        } else if (vimeoMatch[2]) {
-          hParam = `&h=${vimeoMatch[2]}`;
-        }
-        const embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1${hParam}`;
-        return (
-          <AntiPiracyWrapper>
-            <iframe
-              src={embedUrl}
-              title={product.title}
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full rounded-2xl"
-            />
-          </AntiPiracyWrapper>
-        );
-      }
-    }
-
-    // 5. Uploaded MP4 or Direct MP4/Video File
-    if (product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
+    // 3. Link tipi (MP4, WebM veya herhangi bir doğrudan video linki)
+    if (product.video_type === 'link' || product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
+      const videoSrc = url || product.storage_video_path || '';
       return (
         <AntiPiracyWrapper>
           <video
+            key={videoSrc}
             controls
-            controlsList="nodownload"
+            controlsList="nodownload nofullscreen noremoteplayback"
             onContextMenu={(e) => e.preventDefault()}
+            disablePictureInPicture
             autoPlay
             playsInline
-            className="w-full h-full object-cover rounded-2xl"
-            src={url || product.storage_video_path || ''}
+            className="w-full h-full object-contain rounded-2xl"
           >
+            <source src={videoSrc} type="video/mp4" />
+            <source src={videoSrc} type="video/webm" />
+            <source src={videoSrc} />
             Tarayıcınız video oynatmayı desteklemiyor.
           </video>
         </AntiPiracyWrapper>
       );
     }
 
-    if (product.video_type === 'embed' && product.video_url) {
-      if (product.video_url.includes('<iframe')) {
-        return (
-          <AntiPiracyWrapper>
-            <div
-              className="w-full h-full flex items-center justify-center rounded-2xl overflow-hidden [&>iframe]:w-full [&>iframe]:h-full"
-              dangerouslySetInnerHTML={{ __html: product.video_url }}
-            />
-          </AntiPiracyWrapper>
-        );
-      }
-    }
-
-    // 6. Generic Fallback iframe for any other URL
+    // 4. Genel fallback — herhangi bir URL
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return (
         <AntiPiracyWrapper>

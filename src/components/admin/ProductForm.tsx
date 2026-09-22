@@ -9,9 +9,9 @@ import {
   Plus,
   Trash2,
   Video,
-  Upload,
   Link as LinkIcon,
   Code,
+  Youtube,
   FileImage,
   Save,
   CheckSquare,
@@ -159,12 +159,11 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
           <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-3">
             Video Kaynağı Tipi
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { type: 'youtube', label: 'YouTube URL', icon: LinkIcon },
-              { type: 'vimeo', label: 'Vimeo URL', icon: LinkIcon },
+              { type: 'youtube', label: 'YouTube', icon: Youtube },
+              { type: 'link', label: 'Link (MP4/Video)', icon: LinkIcon },
               { type: 'embed', label: 'Embed İframe Kodu', icon: Code },
-              { type: 'upload', label: 'Doğrudan Video Yükle (MP4)', icon: Upload },
               { type: 'secure', label: 'Korumalı Video URL', icon: Shield },
             ].map((item) => {
               const Icon = item.icon;
@@ -189,22 +188,7 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
           <input type="hidden" name="video_type" value={videoType} />
         </div>
 
-        {videoType === 'upload' ? (
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              Supabase Storage MP4 Video Dosyası Seç
-            </label>
-            <input
-              type="file"
-              name="video_file"
-              accept="video/mp4,video/webm"
-              className="w-full text-sm text-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30 file:cursor-pointer bg-slate-900 border border-slate-700 rounded-xl p-2"
-            />
-            {product?.video_url && (
-              <p className="text-xs text-emerald-400 mt-2">Mevcut Yüklü Video: {product.video_url}</p>
-            )}
-          </div>
-        ) : videoType === 'embed' ? (
+        {videoType === 'embed' ? (
           <div>
             <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
               İframe Embed Kodu
@@ -220,21 +204,30 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
         ) : (
           <div>
             <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              {videoType === 'secure' ? 'Güvenli (Korumalı) Video URL' : videoType === 'youtube' ? 'YouTube Video URL' : 'Vimeo Video URL'}
+              {videoType === 'youtube'
+                ? 'YouTube Video Linki'
+                : videoType === 'link'
+                ? 'Video Linki (MP4, WebM veya herhangi bir video URL)'
+                : 'Korumalı Video URL'}
             </label>
             <input
               type="text"
               name="video_url"
               defaultValue={product?.video_url || ''}
               placeholder={
-                videoType === 'secure'
-                  ? 'https://sunucunuz.com/gizli-video.mp4'
-                  : videoType === 'youtube'
-                  ? 'https://www.youtube.com/watch?v=...'
-                  : 'https://vimeo.com/...'
+                videoType === 'youtube'
+                  ? 'https://www.youtube.com/watch?v=XXXXXXXXXXX'
+                  : videoType === 'link'
+                  ? 'https://example.com/video.mp4'
+                  : 'https://sunucunuz.com/gizli-video.mp4'
               }
               className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {videoType === 'link' && (
+              <p className="text-xs text-slate-400 mt-1.5">
+                💡 MP4, WebM linklerini buraya yapıştırın. Video direkt oynatılır ve sağ tık koruması otomatik uygulanır.
+              </p>
+            )}
           </div>
         )}
 

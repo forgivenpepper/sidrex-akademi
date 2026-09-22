@@ -38,9 +38,8 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       }
     }, 5000);
 
-    // 2. Screenshot & Snipping Tool Prevention Listener
+    // 2. Screenshot & Snipping Tool Prevention
     const handleKeyDown = (e: KeyboardEvent) => {
-      // PrintScreen key or Win+Shift+S or Cmd+Shift+S / Cmd+Shift+3 / Cmd+Shift+4
       const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
       const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
       
@@ -50,11 +49,38 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       }
     };
 
+    // 3. Block all right-clicks on the page while video is open
+    const blockContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
+    // 4. Intercept any anchor tag clicks that might open new tabs
+    const blockNewTab = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor && (anchor.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('contextmenu', blockContextMenu, true);
+      container.addEventListener('click', blockNewTab, true);
+    }
+
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
+      if (container) {
+        container.removeEventListener('contextmenu', blockContextMenu, true);
+        container.removeEventListener('click', blockNewTab, true);
+      }
     };
   }, []);
 
@@ -62,8 +88,8 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     <div 
       ref={containerRef} 
       className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center"
-      onContextMenu={(e) => e.preventDefault()}
-      style={{ isolation: 'isolate' }}
+      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      style={{ isolation: 'isolate', userSelect: 'none' }}
     >
       {/* Target Content (Video or Iframe) */}
       <div className="w-full h-full" style={{ pointerEvents: 'auto' }}>
