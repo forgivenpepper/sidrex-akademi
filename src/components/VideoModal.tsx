@@ -150,10 +150,15 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
             controls
             controlsList="nodownload nofullscreen noremoteplayback"
             onContextMenu={(e) => e.preventDefault()}
+            onClick={(e) => {
+              const vid = e.currentTarget;
+              if (vid.paused) vid.play();
+              else vid.pause();
+            }}
             disablePictureInPicture
             autoPlay
             playsInline
-            className="w-full h-full object-contain rounded-2xl"
+            className="w-full h-full object-contain rounded-2xl cursor-pointer"
           >
             <source src={videoSrc} type="video/mp4" />
             <source src={videoSrc} type="video/webm" />
