@@ -272,7 +272,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                       {secItems.map((product, idx) => {
                         const title = product.title || product.name;
                         const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
-                        const image = product.image_url || '/images/product_placeholder.png';
+                        const image = product.thumbnail_url || product.image_url || '/images/product_placeholder.png';
                         
                         return (
                           <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
@@ -283,11 +283,10 @@ export default function LandingPage({ products, profile, sections, settings }: {
                             video_url: product.video_url
                           })}>
                             <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
-                              <Image 
+                              <img 
                                 src={image}
                                 alt={title}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                               {product.video_url && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
@@ -330,7 +329,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                 {finalItems.map((product, idx) => {
                   const title = product.title || product.name;
                   const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
-                  const image = product.image_url || '/images/product_placeholder.png';
+                  const image = product.thumbnail_url || product.image_url || '/images/product_placeholder.png';
                   
                   return (
                     <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
@@ -341,11 +340,10 @@ export default function LandingPage({ products, profile, sections, settings }: {
                       video_url: product.video_url
                     })}>
                       <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
-                        <Image 
+                        <img 
                           src={image}
                           alt={title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         {product.video_url && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
