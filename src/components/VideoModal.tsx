@@ -54,8 +54,12 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       }
     };
 
-    // When window loses focus (Alt+Tab, opening Snipping Tool, etc.)
-    const handleBlur = () => { showOverlay(); };
+    // When window loses focus — but SKIP if focus just moved to an iframe inside our page
+    const handleBlur = () => {
+      // If activeElement is an iframe (e.g. YouTube/video player), don't show overlay
+      if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
+      showOverlay();
+    };
     const handleFocus = () => { hideOverlay(500); };
 
     // When tab becomes hidden
