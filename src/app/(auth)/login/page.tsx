@@ -111,7 +111,10 @@ export default function LoginPage() {
                 name="kvkk"
                 required
                 checked={isKvkkAccepted}
-                onChange={(e) => setIsKvkkAccepted(e.target.checked)}
+                onChange={(e) => {
+                  if (e.target.checked) setShowKvkkModal(true);
+                  else setIsKvkkAccepted(false);
+                }}
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-[#58b09c] focus:ring-[#58b09c] cursor-pointer accent-[#58b09c]"
               />
               <label htmlFor="kvkk" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
@@ -137,7 +140,10 @@ export default function LoginPage() {
                 name="terms"
                 required
                 checked={isTermsAccepted}
-                onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                onChange={(e) => {
+                  if (e.target.checked) setShowTermsModal(true);
+                  else setIsTermsAccepted(false);
+                }}
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-[#58b09c] focus:ring-[#58b09c] cursor-pointer accent-[#58b09c]"
               />
               <label htmlFor="terms" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">

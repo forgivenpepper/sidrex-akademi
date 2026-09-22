@@ -176,7 +176,10 @@ export default function RegisterPage() {
                 name="kvkk"
                 required
                 checked={isKvkkAccepted}
-                onChange={(e) => setIsKvkkAccepted(e.target.checked)}
+                onChange={(e) => {
+                  if (e.target.checked) setShowKvkkModal(true);
+                  else setIsKvkkAccepted(false);
+                }}
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-[#58b09c] focus:ring-[#58b09c] cursor-pointer accent-[#58b09c]"
               />
               <label htmlFor="kvkk-reg" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
@@ -202,7 +205,10 @@ export default function RegisterPage() {
                 name="terms"
                 required
                 checked={isTermsAccepted}
-                onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                onChange={(e) => {
+                  if (e.target.checked) setShowTermsModal(true);
+                  else setIsTermsAccepted(false);
+                }}
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-[#58b09c] focus:ring-[#58b09c] cursor-pointer accent-[#58b09c]"
               />
               <label htmlFor="terms-reg" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
@@ -506,7 +512,7 @@ export default function RegisterPage() {
                   }}
                   className="px-6 py-2 bg-[#58b09c] hover:bg-[#449784] text-white text-sm font-bold rounded-xl transition-colors shadow-md shadow-[#58b09c]/20"
                 >
-                  Okudum, Kabul Ediyorum
+                  Okudum, Anladım ve Kabul Ediyorum
                 </button>
               </div>
             </div>
