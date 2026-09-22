@@ -54,13 +54,17 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       }
     };
 
-    // When window loses focus — but SKIP if focus just moved to an iframe inside our page
+    // When window loses focus — but SKIP if focus stayed within the page (iframe click, backdrop click, etc.)
     const handleBlur = () => {
-      // If activeElement is an iframe (e.g. YouTube/video player), don't show overlay
-      if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
-      showOverlay();
+      // Small timeout to let the DOM update - check if focus stayed within the document
+      setTimeout(() => {
+        // If focus is still on an element within this page, don't show overlay
+        if (document.activeElement && document.activeElement !== document.body) return;
+        if (document.hasFocus()) return; // Page still has OS-level focus
+        showOverlay();
+      }, 50);
     };
-    const handleFocus = () => { hideOverlay(500); };
+    const handleFocus = () => { hideOverlay(200); };
 
     // When tab becomes hidden
     const handleVisibility = () => {
@@ -190,6 +194,10 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md overflow-y-auto animate-fade-in select-none"
       onContextMenu={(e) => e.preventDefault()}
+      onClick={(e) => {
+        // Close modal when clicking on the backdrop (outside the modal card)
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       {/* SCREENSHOT WARNING OVERLAY — always in DOM (GPU layer), toggled via opacity for instant response */}
       <div
