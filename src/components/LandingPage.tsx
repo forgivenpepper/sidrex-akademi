@@ -1,28 +1,30 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PlayCircle, ShieldCheck, HelpCircle, ArrowRight, User } from 'lucide-react';
+import VideoModal from './VideoModal';
 
 export default function LandingPage({ products }: { products?: any[] }) {
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
   const displayItems = products && products.length > 0 
-    ? products.map(p => ({
-        id: p.id,
-        title: p.name,
-        desc: p.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.',
-        image: p.image_url || '/images/product_placeholder.png'
-      }))
-    : [
-        { title: "Bitkisel Ürünler", desc: "Doğanın gücüyle tasarlanmış bitkisel çözümler.", image: "/images/product_placeholder.png" },
-        { title: "Çocuk Ürünleri", desc: "Çocukların hassas metabolizmasına uygun, tam doğal formüller.", image: "/images/product_placeholder.png" },
-        { title: "Boğaz/Ağız Ürünleri", desc: "Doğal bileşenleriyle boğaz ve ağız bakımında uzman çözümler.", image: "/images/product_placeholder.png" },
-        { title: "Fonksiyonel İçecekler", desc: "Günlük rutininize aktif ve sağlıklı bir dokunuş.", image: "/images/product_placeholder.png" },
-        { title: "Kadın-Erkek", desc: "Her cinsiyetin özel gereksinimlerine göre tasarlanmış çözümler.", image: "/images/product_placeholder.png" },
-        { title: "Kolajenler", desc: "Cilt, saç, tırnak ve eklem sağlığı için benzersiz destek.", image: "/images/product_placeholder.png" },
-        { title: "Özel Takviyeler", desc: "İhtiyaca yönelik, fonksiyonel ve koruyucu çözümler.", image: "/images/product_placeholder.png" },
-        { title: "Vitamin-Mineral", desc: "Vücudunuzun ihtiyacı olan hayati bileşenler.", image: "/images/product_placeholder.png" }
-      ];
+    ? products
+    : [];
+    
+  const placeholderItems = [
+    { name: "Bitkisel Ürünler", description: "Doğanın gücüyle tasarlanmış bitkisel çözümler.", image_url: "/images/product_placeholder.png" },
+    { name: "Çocuk Ürünleri", description: "Çocukların hassas metabolizmasına uygun, tam doğal formüller.", image_url: "/images/product_placeholder.png" },
+    { name: "Boğaz/Ağız Ürünleri", description: "Doğal bileşenleriyle boğaz ve ağız bakımında uzman çözümler.", image_url: "/images/product_placeholder.png" },
+    { name: "Fonksiyonel İçecekler", description: "Günlük rutininize aktif ve sağlıklı bir dokunuş.", image_url: "/images/product_placeholder.png" },
+    { name: "Kadın-Erkek", description: "Her cinsiyetin özel gereksinimlerine göre tasarlanmış çözümler.", image_url: "/images/product_placeholder.png" },
+    { name: "Kolajenler", description: "Cilt, saç, tırnak ve eklem sağlığı için benzersiz destek.", image_url: "/images/product_placeholder.png" },
+    { name: "Özel Takviyeler", description: "İhtiyaca yönelik, fonksiyonel ve koruyucu çözümler.", image_url: "/images/product_placeholder.png" },
+    { name: "Vitamin-Mineral", description: "Vücudunuzun ihtiyacı olan hayati bileşenler.", image_url: "/images/product_placeholder.png" }
+  ];
+
+  const itemsToRender = displayItems.length > 0 ? displayItems : placeholderItems;
 
   return (
     <div className="min-h-screen bg-white font-sans text-[#0b2545] selection:bg-[#58b09c] selection:text-white">
@@ -154,25 +156,40 @@ export default function LandingPage({ products }: { products?: any[] }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {displayItems.map((category, idx) => (
-              <div key={idx} className="group">
-                <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
-                  <Image 
-                    src={category.image}
-                    alt={category.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{category.title}</h4>
-                <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{category.desc}</p>
-                <Link href="/login">
+            {itemsToRender.map((product, idx) => {
+              const title = product.title || product.name;
+              const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
+              const image = product.image_url || '/images/product_placeholder.png';
+              
+              return (
+                <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
+                  id: product.id || String(idx),
+                  title: title,
+                  description: desc,
+                  image_url: image,
+                  video_url: product.video_url
+                })}>
+                  <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
+                    <Image 
+                      src={image}
+                      alt={title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {product.video_url && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
+                        <PlayCircle className="w-12 h-12 text-white drop-shadow-md opacity-90 group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
+                  <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
                   <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
                     İncele
                   </button>
-                </Link>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -261,6 +278,14 @@ export default function LandingPage({ products }: { products?: any[] }) {
         </div>
         <p className="text-xs text-slate-500 font-medium">Sidrex Akademi 2026</p>
       </footer>
+      
+      {/* Video Modal */}
+      {selectedProduct && (
+        <VideoModal 
+          product={selectedProduct} 
+          onClose={() => setSelectedProduct(null)} 
+        />
+      )}
     </div>
   );
 }
