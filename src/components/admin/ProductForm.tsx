@@ -224,16 +224,43 @@ export default function ProductForm({ product, sections }: ProductFormProps) {
         )}
 
         <div className="pt-4 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              Kapak Görseli Yükle (Thumbnail)
-            </label>
-            <input
-              type="file"
-              name="thumbnail_file"
-              accept="image/*"
-              className="w-full text-sm text-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30 file:cursor-pointer bg-slate-900 border border-slate-700 rounded-xl p-2"
-            />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                Kapak Görseli URL
+              </label>
+              <input
+                type="text"
+                name="thumbnail_url_input"
+                defaultValue={product?.thumbnail_url || ''}
+                placeholder="Örn: https://sidrex.com/.../gorsel.png"
+                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-slate-400 mt-1.5">
+                💡 Veritabanını şişirmemek için direkt resim linki girebilirsiniz.
+              </p>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-slate-700"></div>
+              </div>
+              <div className="relative flex justify-center">
+                <span className="px-2 bg-slate-800 text-xs text-gray-500 rounded-md">VEYA YÜKLE</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                Bilgisayardan Seç
+              </label>
+              <input
+                type="file"
+                name="thumbnail_file"
+                accept="image/*"
+                className="w-full text-sm text-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30 file:cursor-pointer bg-slate-900 border border-slate-700 rounded-xl p-2"
+              />
+            </div>
           </div>
 
           {product?.thumbnail_url && (

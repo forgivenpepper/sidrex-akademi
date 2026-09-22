@@ -140,23 +140,29 @@ export async function saveProductAction(prevState: any, formData: FormData) {
   let thumbnail_url = formData.get('existing_thumbnail_url') as string || null;
   let storage_video_path = formData.get('existing_storage_video_path') as string || null;
 
-  const thumbnailFile = formData.get('thumbnail_file') as File | null;
-  if (thumbnailFile && thumbnailFile.size > 0) {
-    const fileExt = thumbnailFile.name.split('.').pop();
-    const filePath = `thumbnails/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const { error: uploadErr } = await supabase.storage
-      .from('product-thumbnails')
-      .upload(filePath, thumbnailFile);
+  const thumbnail_url_input = formData.get('thumbnail_url_input') as string;
 
-    if (uploadErr) {
-      return { error: 'Kapak görseli yüklenemedi: ' + uploadErr.message };
+  if (thumbnail_url_input && thumbnail_url_input.trim() !== '') {
+    thumbnail_url = thumbnail_url_input.trim();
+  } else {
+    const thumbnailFile = formData.get('thumbnail_file') as File | null;
+    if (thumbnailFile && thumbnailFile.size > 0) {
+      const fileExt = thumbnailFile.name.split('.').pop();
+      const filePath = `thumbnails/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('product-thumbnails')
+        .upload(filePath, thumbnailFile);
+
+      if (uploadErr) {
+        return { error: 'Kapak görseli yüklenemedi: ' + uploadErr.message };
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('product-thumbnails')
+        .getPublicUrl(filePath);
+
+      thumbnail_url = publicUrlData.publicUrl;
     }
-
-    const { data: publicUrlData } = supabase.storage
-      .from('product-thumbnails')
-      .getPublicUrl(filePath);
-
-    thumbnail_url = publicUrlData.publicUrl;
   }
 
   const videoFile = formData.get('video_file') as File | null;
