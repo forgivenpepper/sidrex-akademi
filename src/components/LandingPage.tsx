@@ -86,25 +86,18 @@ export default function LandingPage({ products, profile, sections }: { products?
             Sidrex<br />Akademi
           </h1>
           
-          {/* Categories in Hero - Premium Apple/Netflix Style Boxes */}
+          {/* Categories in Hero - Minimal Glassmorphism Boxes */}
           {sections && sections.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-4 md:gap-5 mt-12 max-w-6xl mx-auto pb-8">
+            <div className="flex flex-wrap justify-center gap-4 mt-12 max-w-5xl mx-auto pb-8">
               <button 
                 onClick={() => handleCategoryClick('all')}
-                className={`relative group w-36 h-24 md:w-44 md:h-28 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-105 hover:z-20 hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.5)] ${selectedSectionId === 'all' ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545] shadow-[0_0_20px_rgba(88,176,156,0.4)]' : 'shadow-xl'}`}
+                className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === 'all' ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]' : ''}`}
               >
-                {/* Background Base */}
-                <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-500 ${selectedSectionId === 'all' ? 'from-[#58b09c] to-[#1f4a40] opacity-100' : 'from-slate-700/80 to-slate-900/90 backdrop-blur-md opacity-80 group-hover:opacity-100'}`} />
-                
-                {/* Border effect */}
-                <div className="absolute inset-0 border border-white/20 rounded-2xl group-hover:border-white/40 transition-colors duration-500" />
-                
-                {/* Shine effect */}
-                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12" />
-
-                <div className="absolute inset-0 flex items-end justify-start p-4 text-left bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                  <span className="text-white font-extrabold text-sm md:text-base drop-shadow-lg leading-snug tracking-wide group-hover:text-[#58b09c] transition-colors duration-300">
-                    Tüm <br/>Kategoriler
+                <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === 'all' ? 'bg-[#58b09c]/90 backdrop-blur-md' : 'bg-white/10 backdrop-blur-md group-hover:bg-white/20'}`} />
+                <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === 'all' ? 'border-[#58b09c]' : 'border-white/20 group-hover:border-white/40'}`} />
+                <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                  <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
+                    Tüm Kategoriler
                   </span>
                 </div>
               </button>
@@ -113,22 +106,12 @@ export default function LandingPage({ products, profile, sections }: { products?
                 <button 
                   key={sec.id}
                   onClick={() => handleCategoryClick(sec.id)}
-                  className={`relative group w-36 h-24 md:w-44 md:h-28 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-105 hover:z-20 hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.5)] ${selectedSectionId === sec.id ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545] shadow-[0_0_20px_rgba(88,176,156,0.4)]' : 'shadow-xl'}`}
+                  className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === sec.id ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]' : ''}`}
                 >
-                  {/* Background Base */}
-                  <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-500 ${selectedSectionId === sec.id ? 'from-[#58b09c] to-[#1f4a40] opacity-100' : 'from-slate-700/80 to-slate-900/90 backdrop-blur-md opacity-80 group-hover:opacity-100'}`} />
-                  
-                  {/* Subtle Pattern */}
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay group-hover:opacity-20 transition-opacity duration-500" />
-                  
-                  {/* Border effect */}
-                  <div className="absolute inset-0 border border-white/20 rounded-2xl group-hover:border-white/40 transition-colors duration-500" />
-                  
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12" />
-
-                  <div className="absolute inset-0 flex items-end justify-start p-4 text-left bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                    <span className="text-white font-extrabold text-sm md:text-base drop-shadow-lg leading-snug tracking-wide group-hover:text-[#58b09c] transition-colors duration-300">
+                  <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === sec.id ? 'bg-[#58b09c]/90 backdrop-blur-md' : 'bg-white/10 backdrop-blur-md group-hover:bg-white/20'}`} />
+                  <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === sec.id ? 'border-[#58b09c]' : 'border-white/20 group-hover:border-white/40'}`} />
+                  <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                    <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
                       {sec.title}
                     </span>
                   </div>
