@@ -28,36 +28,36 @@ export default function CookieBanner() {
     <>
       {/* Bottom Banner */}
       {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6 animate-in slide-in-from-bottom-full duration-500">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl rounded-3xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-[100] p-2 sm:p-4 animate-in slide-in-from-bottom-full duration-500">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 relative overflow-hidden">
               {/* Decorative top accent */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#58b09c] via-[#449784] to-[#0b2545]" />
               
-              <div className="flex items-start md:items-center gap-4 flex-1">
-                <div className="p-3 rounded-2xl bg-[#edf7f3] text-[#58b09c] hidden sm:flex shrink-0">
-                  <Cookie className="w-6 h-6" />
+              <div className="flex items-center gap-3 flex-1 w-full">
+                <div className="p-2 rounded-xl bg-[#edf7f3] text-[#58b09c] hidden sm:flex shrink-0">
+                  <Cookie className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-[#0b2545] mb-1">Çerez (Cookie) Kullanımı</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-4xl">
-                    Size daha iyi bir kullanıcı deneyimi sunabilmek, platformun güvenliğini sağlamak ve tercihlerinizi hatırlamak amacıyla çerezler (cookies) kullanmaktayız. Sitemizi kullanmaya devam ederek çerez kullanımını kabul etmiş sayılırsınız.{' '}
+                <div className="flex-1">
+                  <p className="text-[11px] sm:text-xs text-slate-600 leading-snug">
+                    <strong className="text-[#0b2545] font-bold mr-1">Çerez (Cookie) Kullanımı:</strong> 
+                    Size daha iyi bir deneyim sunabilmek için çerezler kullanıyoruz. Sitemizi kullanarak bunu kabul etmiş sayılırsınız.{' '}
                     <button
                       onClick={() => setShowModal(true)}
-                      className="text-[#58b09c] font-bold underline hover:text-[#449784] transition-colors whitespace-nowrap inline-block mt-1 sm:mt-0"
+                      className="text-[#58b09c] font-bold underline hover:text-[#449784] transition-colors whitespace-nowrap inline-block"
                     >
-                      Detaylı Bilgi İçin Tıklayın
+                      Detaylı Bilgi
                     </button>
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 w-full md:w-auto shrink-0 mt-2 md:mt-0">
+              <div className="w-full sm:w-auto shrink-0">
                 <button
                   onClick={handleAccept}
-                  className="w-full md:w-auto bg-[#58b09c] hover:bg-[#449784] text-white font-bold py-2.5 px-6 rounded-2xl shadow-md shadow-[#58b09c]/20 transition-all text-sm flex items-center justify-center gap-2 whitespace-nowrap"
+                  className="w-full sm:w-auto bg-[#58b09c] hover:bg-[#449784] text-white font-bold py-2 px-4 rounded-xl shadow-md shadow-[#58b09c]/20 transition-all text-xs flex items-center justify-center gap-1.5 whitespace-nowrap"
                 >
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-3.5 h-3.5" />
                   Kabul Et ve Kapat
                 </button>
               </div>
