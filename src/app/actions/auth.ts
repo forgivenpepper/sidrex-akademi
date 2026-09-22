@@ -37,7 +37,7 @@ export async function loginAction(prevState: any, formData: FormData) {
     return { error: 'E-posta veya şifre hatalı!' };
   }
 
-  redirect('/');
+  redirect('/katalog');
 }
 
 export async function registerAction(prevState: any, formData: FormData) {
