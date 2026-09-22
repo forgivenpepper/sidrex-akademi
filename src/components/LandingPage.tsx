@@ -180,58 +180,128 @@ export default function LandingPage({ products, profile, sections }: { products?
       {/* CATEGORIES SECTION */}
       <section ref={productsRef} className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-6">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">
-                {selectedSectionId === 'all' ? 'Tüm Ürünler' : sections?.find(s => s.id === selectedSectionId)?.title}
-              </h2>
-              <p className="text-slate-500">
-                Bu alanda ürünlerin uygulanması ve kullanım detaylarına ulaşabilirsiniz.
-              </p>
-            </div>
-            <div className="mt-4 md:mt-0">
-              <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-4 py-2 rounded-full">
-                {finalItems.length} İçerik
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {finalItems.map((product, idx) => {
-              const title = product.title || product.name;
-              const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
-              const image = product.image_url || '/images/product_placeholder.png';
+          
+          {selectedSectionId === 'all' && sections && sections.length > 0 ? (
+            <div className="space-y-16">
+              <div className="mb-8 border-b border-slate-200 pb-6">
+                <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">Tüm Ürünler</h2>
+                <p className="text-slate-500">
+                  Aşağıda tüm ürünlerimizi kategorilerine göre sıralanmış şekilde inceleyebilirsiniz.
+                </p>
+              </div>
               
-              return (
-                <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
-                  id: product.id || String(idx),
-                  title: title,
-                  description: desc,
-                  image_url: image,
-                  video_url: product.video_url
-                })}>
-                  <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
-                    <Image 
-                      src={image}
-                      alt={title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {product.video_url && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
-                        <PlayCircle className="w-12 h-12 text-white drop-shadow-md opacity-90 group-hover:scale-110 transition-transform duration-300" />
+              {sections.map(sec => {
+                const secItems = finalItems.filter(p => p.section_id === sec.id);
+                if (secItems.length === 0) return null;
+                
+                return (
+                  <div key={sec.id} className="space-y-6">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-2.5 h-6 rounded-full bg-[#58b09c]" />
+                        <h3 className="text-2xl font-bold text-[#0b2545] tracking-tight">{sec.title}</h3>
                       </div>
-                    )}
+                      <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-3 py-1 rounded-full">
+                        {secItems.length} Ürün
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                      {secItems.map((product, idx) => {
+                        const title = product.title || product.name;
+                        const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
+                        const image = product.image_url || '/images/product_placeholder.png';
+                        
+                        return (
+                          <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
+                            id: product.id || String(idx),
+                            title: title,
+                            description: desc,
+                            image_url: image,
+                            video_url: product.video_url
+                          })}>
+                            <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
+                              <Image 
+                                src={image}
+                                alt={title}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              {product.video_url && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
+                                  <PlayCircle className="w-12 h-12 text-white drop-shadow-md opacity-90 group-hover:scale-110 transition-transform duration-300" />
+                                </div>
+                              )}
+                            </div>
+                            <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
+                            <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
+                            <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
+                              İncele
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
-                  <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
-                  <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
-                    İncele
-                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <>
+              <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-6">
+                <div className="max-w-2xl">
+                  <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">
+                    {selectedSectionId === 'all' ? 'Tüm Ürünler' : sections?.find(s => s.id === selectedSectionId)?.title}
+                  </h2>
+                  <p className="text-slate-500">
+                    Bu alanda ürünlerin uygulanması ve kullanım detaylarına ulaşabilirsiniz.
+                  </p>
                 </div>
-              );
-            })}
-          </div>
+                <div className="mt-4 md:mt-0">
+                  <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-4 py-2 rounded-full">
+                    {finalItems.length} İçerik
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {finalItems.map((product, idx) => {
+                  const title = product.title || product.name;
+                  const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
+                  const image = product.image_url || '/images/product_placeholder.png';
+                  
+                  return (
+                    <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
+                      id: product.id || String(idx),
+                      title: title,
+                      description: desc,
+                      image_url: image,
+                      video_url: product.video_url
+                    })}>
+                      <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
+                        <Image 
+                          src={image}
+                          alt={title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        {product.video_url && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
+                            <PlayCircle className="w-12 h-12 text-white drop-shadow-md opacity-90 group-hover:scale-110 transition-transform duration-300" />
+                          </div>
+                        )}
+                      </div>
+                      <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
+                      <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
+                      <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
+                        İncele
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
