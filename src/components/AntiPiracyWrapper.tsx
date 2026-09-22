@@ -43,19 +43,21 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
       const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
       
-      if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen') {
-        e.preventDefault(); // Try to block the OS shortcut if browser allows
+      // We block immediately if they even press Meta/Win + Shift to be safe, or PrintScreen
+      if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen' || (e.metaKey && e.shiftKey)) {
+        e.preventDefault(); 
         setIsScreenshotting(true);
         setTimeout(() => setIsScreenshotting(false), 4000);
       }
     };
 
-    // 2.5. Blur when window loses focus (e.g., opening Snipping tool from start menu)
-    const handleWindowBlur = () => {
-      setIsScreenshotting(true);
-    };
-    const handleWindowFocus = () => {
-      setIsScreenshotting(false);
+    // 2.5. Blur & Visibility when window loses focus 
+    const handleWindowBlur = () => setIsScreenshotting(true);
+    const handleWindowFocus = () => setIsScreenshotting(false);
+    
+    const handleVisibilityChange = () => {
+      if (document.hidden) setIsScreenshotting(true);
+      else setIsScreenshotting(false);
     };
 
     // 3. Block all right-clicks on the page while video is open
@@ -81,15 +83,18 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       container.addEventListener('click', blockNewTab, true);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('blur', handleWindowBlur);
-    window.addEventListener('focus', handleWindowFocus);
+    // Use capture phase (true) to intercept before any other script/browser defaults
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('blur', handleWindowBlur, true);
+    window.addEventListener('focus', handleWindowFocus, true);
+    document.addEventListener('visibilitychange', handleVisibilityChange, true);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('blur', handleWindowBlur);
-      window.removeEventListener('focus', handleWindowFocus);
+      window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('blur', handleWindowBlur, true);
+      window.removeEventListener('focus', handleWindowFocus, true);
+      document.removeEventListener('visibilitychange', handleVisibilityChange, true);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
         container.removeEventListener('click', blockNewTab, true);
