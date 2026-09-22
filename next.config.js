@@ -1,26 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Admin panelinden herhangi bir URL girilebilsin diye wildcard eklendi
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'lgcadqfypbskofbuabyh.supabase.co',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: 'cdn.shopify.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.youtube.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.ytimg.com',
+        protocol: 'http',
+        hostname: '**',
       }
     ],
   },

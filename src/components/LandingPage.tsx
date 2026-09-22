@@ -71,13 +71,23 @@ export default function LandingPage({ products, profile, sections, settings }: {
       <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src={settings?.hero_bg_image || "/images/hero_bg.png"}
-            alt={settings?.hero_title || "Sidrex Akademi"}
-            fill
-            className="object-cover"
-            priority
-          />
+          {settings?.hero_bg_image ? (
+            // Dış URL - standart img tag ile tam esneklik
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={settings.hero_bg_image}
+              alt={settings.hero_title || "Sidrex Akademi"}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Image
+              src="/images/hero_bg.png"
+              alt="Sidrex Akademi"
+              fill
+              className="object-cover"
+              priority
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2545]/90 via-[#0b2545]/50 to-transparent mix-blend-multiply" />
         </div>
         
