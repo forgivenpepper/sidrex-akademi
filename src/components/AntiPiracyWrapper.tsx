@@ -38,15 +38,24 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       }
     }, 5000);
 
-    // 2. Screenshot & Snipping Tool Prevention
+    // 2. Screenshot & Snipping Tool Prevention (Keyboard)
     const handleKeyDown = (e: KeyboardEvent) => {
       const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
       const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
       
       if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen') {
+        e.preventDefault(); // Try to block the OS shortcut if browser allows
         setIsScreenshotting(true);
         setTimeout(() => setIsScreenshotting(false), 4000);
       }
+    };
+
+    // 2.5. Blur when window loses focus (e.g., opening Snipping tool from start menu)
+    const handleWindowBlur = () => {
+      setIsScreenshotting(true);
+    };
+    const handleWindowFocus = () => {
+      setIsScreenshotting(false);
     };
 
     // 3. Block all right-clicks on the page while video is open
@@ -73,10 +82,14 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     }
 
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('blur', handleWindowBlur);
+      window.removeEventListener('focus', handleWindowFocus);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
         container.removeEventListener('click', blockNewTab, true);
