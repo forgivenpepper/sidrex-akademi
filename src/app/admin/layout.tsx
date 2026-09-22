@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { logoutAction } from '@/app/actions/auth';
 import Link from 'next/link';
-import { LayoutDashboard, Layers, Package, LogOut, ArrowLeft, ShieldCheck, MousePointerClick, Settings } from 'lucide-react';
+import { LayoutDashboard, Layers, Package, LogOut, ArrowLeft, ShieldCheck, MousePointerClick, Settings, Users } from 'lucide-react';
 
 export default async function AdminLayout({
   children,
@@ -41,6 +41,14 @@ export default async function AdminLayout({
             >
               <Package className="w-5 h-5" />
               <span>Ürünler & Videolar</span>
+            </Link>
+
+            <Link
+              href="/admin/users"
+              className="flex items-center space-x-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-blue-600/20 text-gray-200 hover:text-blue-400 transition-all font-medium text-sm"
+            >
+              <Users className="w-5 h-5" />
+              <span>Müşteriler</span>
             </Link>
 
             <Link
