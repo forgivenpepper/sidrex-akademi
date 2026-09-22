@@ -40,6 +40,12 @@ export default function LandingPage({ products, profile, sections, settings }: {
     }));
   };
 
+  const getSectionImage = (secId: string) => {
+    if (secId === 'all') return products?.[0]?.thumbnail_url || products?.[0]?.image_url || '/images/product_placeholder.png';
+    const p = products?.find(p => p.section_id === secId);
+    return p?.thumbnail_url || p?.image_url || '/images/product_placeholder.png';
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans text-[#0b2545] selection:bg-[#58b09c] selection:text-white">
       {/* HEADER */}
@@ -114,12 +120,15 @@ export default function LandingPage({ products, profile, sections, settings }: {
             <div className="flex flex-wrap justify-center gap-4 mt-12 max-w-5xl mx-auto pb-8">
               <button 
                 onClick={() => handleCategoryClick('all')}
-                className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === 'all' ? 'ring-1 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : ''}`}
+                className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === 'all' ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : 'ring-1 ring-white/20'}`}
               >
-                <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === 'all' ? 'bg-[#58b09c]/60 backdrop-blur-sm' : 'bg-white/5 backdrop-blur-sm group-hover:bg-white/10'}`} />
-                <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === 'all' ? 'border-[#58b09c]/50' : 'border-white/10 group-hover:border-white/20'}`} />
+                <div 
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                  style={{ backgroundImage: `url(${getSectionImage('all')})` }}
+                />
+                <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === 'all' ? 'bg-[#0b2545]/70' : 'bg-[#0b2545]/60 group-hover:bg-[#0b2545]/40'}`} />
                 <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-                  <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
+                  <span className="text-white font-bold text-sm md:text-base tracking-wide transition-colors duration-300 drop-shadow-md">
                     Tüm Kategoriler
                   </span>
                 </div>
@@ -129,12 +138,15 @@ export default function LandingPage({ products, profile, sections, settings }: {
                 <button 
                   key={sec.id}
                   onClick={() => handleCategoryClick(sec.id)}
-                  className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === sec.id ? 'ring-1 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : ''}`}
+                  className={`relative group w-36 h-20 md:w-44 md:h-24 rounded-2xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg ${selectedSectionId === sec.id ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545]/50' : 'ring-1 ring-white/20'}`}
                 >
-                  <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === sec.id ? 'bg-[#58b09c]/60 backdrop-blur-sm' : 'bg-white/5 backdrop-blur-sm group-hover:bg-white/10'}`} />
-                  <div className={`absolute inset-0 border rounded-2xl transition-colors duration-300 ${selectedSectionId === sec.id ? 'border-[#58b09c]/50' : 'border-white/10 group-hover:border-white/20'}`} />
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${getSectionImage(sec.id)})` }}
+                  />
+                  <div className={`absolute inset-0 transition-colors duration-300 ${selectedSectionId === sec.id ? 'bg-[#0b2545]/70' : 'bg-[#0b2545]/60 group-hover:bg-[#0b2545]/40'}`} />
                   <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-                    <span className="text-white font-medium text-sm md:text-base tracking-wide transition-colors duration-300">
+                    <span className="text-white font-bold text-sm md:text-base tracking-wide transition-colors duration-300 drop-shadow-md">
                       {sec.title}
                     </span>
                   </div>
