@@ -54,14 +54,14 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       }
     };
 
-    // When window loses focus — but SKIP if focus stayed within the page (iframe click)
+    // Window blur — only show overlay if page truly lost OS-level focus
+    // requestAnimationFrame ensures we check AFTER the current event is done
     const handleBlur = () => {
-      // Skip if focus went to an iframe (video player click)
-      if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
-      // Show overlay instantly — OS took focus (Win+Shift+S, Alt+Tab, etc.)
-      showOverlay();
+      requestAnimationFrame(() => {
+        if (!document.hasFocus()) showOverlay();
+      });
     };
-    // When user returns to window — keep overlay visible for 4 seconds
+    // When user returns — keep overlay for 4 seconds
     const handleFocus = () => { hideOverlay(4000); };
 
     // When tab becomes hidden
