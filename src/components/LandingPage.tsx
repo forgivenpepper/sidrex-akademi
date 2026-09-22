@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PlayCircle, ShieldCheck, HelpCircle, ArrowRight, User } from 'lucide-react';
@@ -8,25 +8,29 @@ import VideoModal from './VideoModal';
 import Header from './Header';
 import { Profile } from '@/lib/types/database';
 
-export default function LandingPage({ products, profile }: { products?: any[], profile?: Profile | null }) {
+export default function LandingPage({ products, profile, sections }: { products?: any[], profile?: Profile | null, sections?: any[] }) {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
+  const productsRef = useRef<HTMLDivElement>(null);
 
   const displayItems = products && products.length > 0 
     ? products
     : [];
+
+  const itemsToRender = displayItems.filter(p => selectedSectionId === 'all' || p.section_id === selectedSectionId);
     
   const placeholderItems = [
-    { name: "Bitkisel Ürünler", description: "Doğanın gücüyle tasarlanmış bitkisel çözümler.", image_url: "/images/product_placeholder.png" },
-    { name: "Çocuk Ürünleri", description: "Çocukların hassas metabolizmasına uygun, tam doğal formüller.", image_url: "/images/product_placeholder.png" },
-    { name: "Boğaz/Ağız Ürünleri", description: "Doğal bileşenleriyle boğaz ve ağız bakımında uzman çözümler.", image_url: "/images/product_placeholder.png" },
-    { name: "Fonksiyonel İçecekler", description: "Günlük rutininize aktif ve sağlıklı bir dokunuş.", image_url: "/images/product_placeholder.png" },
-    { name: "Kadın-Erkek", description: "Her cinsiyetin özel gereksinimlerine göre tasarlanmış çözümler.", image_url: "/images/product_placeholder.png" },
-    { name: "Kolajenler", description: "Cilt, saç, tırnak ve eklem sağlığı için benzersiz destek.", image_url: "/images/product_placeholder.png" },
-    { name: "Özel Takviyeler", description: "İhtiyaca yönelik, fonksiyonel ve koruyucu çözümler.", image_url: "/images/product_placeholder.png" },
-    { name: "Vitamin-Mineral", description: "Vücudunuzun ihtiyacı olan hayati bileşenler.", image_url: "/images/product_placeholder.png" }
+    { name: "Örnek Ürün", description: "Lütfen ürün ekleyin.", image_url: "/images/product_placeholder.png" }
   ];
 
-  const itemsToRender = displayItems.length > 0 ? displayItems : placeholderItems;
+  const finalItems = displayItems.length > 0 ? itemsToRender : placeholderItems;
+
+  const handleCategoryClick = (id: string) => {
+    setSelectedSectionId(id);
+    if (productsRef.current) {
+      productsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans text-[#0b2545] selection:bg-[#58b09c] selection:text-white">
@@ -77,10 +81,31 @@ export default function LandingPage({ products, profile }: { products?: any[], p
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2545]/90 via-[#0b2545]/50 to-transparent mix-blend-multiply" />
         </div>
         
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight drop-shadow-xl">
+        <div className="relative z-10 text-center max-w-5xl mx-auto px-4 mt-16">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-xl">
             Sidrex<br />Akademi
           </h1>
+          
+          {/* Categories in Hero */}
+          {sections && sections.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mt-12 max-w-4xl mx-auto">
+              <button 
+                onClick={() => handleCategoryClick('all')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md transition-all ${selectedSectionId === 'all' ? 'bg-[#58b09c] text-white border-2 border-[#58b09c]' : 'bg-white/10 text-white border-2 border-white/30 hover:bg-white/20'}`}
+              >
+                Tüm Kategoriler
+              </button>
+              {sections.map(sec => (
+                <button 
+                  key={sec.id}
+                  onClick={() => handleCategoryClick(sec.id)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md transition-all ${selectedSectionId === sec.id ? 'bg-[#58b09c] text-white border-2 border-[#58b09c]' : 'bg-white/10 text-white border-2 border-white/30 hover:bg-white/20'}`}
+                >
+                  {sec.title}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -153,20 +178,26 @@ export default function LandingPage({ products, profile }: { products?: any[], p
       </section>
 
       {/* CATEGORIES SECTION */}
-      <section className="py-20 bg-white">
+      <section ref={productsRef} className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="mb-12 max-w-2xl">
-            <h2 className="text-3xl font-extrabold text-[#0b2545] mb-4 tracking-tight">
-              Sidrex Akademi <br /> İçerik Paylaşım & Mevzuat <br /> Rehberi
-            </h2>
-            <p className="text-slate-600 leading-relaxed">
-              Bu içerik rehberi, ürünlerin uygulanmasını, doğru kullanımı ve saklama koşulları hakkında, 
-              çevrimiçi dahil tüm önemli paylaşımların anlaşılması ve uygulanması üzerine tasarlanmıştır.
-            </p>
+          <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-6">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">
+                {selectedSectionId === 'all' ? 'Tüm Ürünler' : sections?.find(s => s.id === selectedSectionId)?.title}
+              </h2>
+              <p className="text-slate-500">
+                Bu alanda ürünlerin uygulanması ve kullanım detaylarına ulaşabilirsiniz.
+              </p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-4 py-2 rounded-full">
+                {finalItems.length} İçerik
+              </span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {itemsToRender.map((product, idx) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {finalItems.map((product, idx) => {
               const title = product.title || product.name;
               const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
               const image = product.image_url || '/images/product_placeholder.png';

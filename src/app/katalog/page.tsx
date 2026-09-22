@@ -37,6 +37,7 @@ export default async function KatalogPage() {
   return (
     <LandingPage
       products={products || []}
+      sections={sections || []}
       profile={profile}
     />
   );
