@@ -128,17 +128,19 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     // 5. Uploaded MP4 or Direct MP4/Video File
     if (product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
       return (
-        <video
-          controls
-          controlsList="nodownload"
-          onContextMenu={(e) => e.preventDefault()}
-          autoPlay
-          playsInline
-          className="w-full h-full object-cover rounded-2xl"
-          src={url || product.storage_video_path || ''}
-        >
-          Tarayıcınız video oynatmayı desteklemiyor.
-        </video>
+        <AntiPiracyWrapper>
+          <video
+            controls
+            controlsList="nodownload"
+            onContextMenu={(e) => e.preventDefault()}
+            autoPlay
+            playsInline
+            className="w-full h-full object-cover rounded-2xl"
+            src={url || product.storage_video_path || ''}
+          >
+            Tarayıcınız video oynatmayı desteklemiyor.
+          </video>
+        </AntiPiracyWrapper>
       );
     }
 
