@@ -86,17 +86,25 @@ export default function LandingPage({ products, profile, sections }: { products?
             Sidrex<br />Akademi
           </h1>
           
-          {/* Categories in Hero - Netflix Style Boxes */}
+          {/* Categories in Hero - Premium Apple/Netflix Style Boxes */}
           {sections && sections.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-4 mt-12 max-w-5xl mx-auto pb-4">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-5 mt-12 max-w-6xl mx-auto pb-8">
               <button 
                 onClick={() => handleCategoryClick('all')}
-                className={`relative group w-32 h-20 md:w-40 md:h-24 rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:z-20 ${selectedSectionId === 'all' ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0b2545]' : ''}`}
+                className={`relative group w-36 h-24 md:w-44 md:h-28 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-105 hover:z-20 hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.5)] ${selectedSectionId === 'all' ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545] shadow-[0_0_20px_rgba(88,176,156,0.4)]' : 'shadow-xl'}`}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-300 ${selectedSectionId === 'all' ? 'from-[#58b09c] to-[#3a7567] opacity-90' : 'from-slate-800 to-slate-900 opacity-70 group-hover:opacity-90'}`} />
-                <div className="absolute inset-0 flex items-center justify-center p-3 text-center">
-                  <span className="text-white font-bold text-sm md:text-base drop-shadow-md leading-tight">
-                    Tüm Kategoriler
+                {/* Background Base */}
+                <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-500 ${selectedSectionId === 'all' ? 'from-[#58b09c] to-[#1f4a40] opacity-100' : 'from-slate-700/80 to-slate-900/90 backdrop-blur-md opacity-80 group-hover:opacity-100'}`} />
+                
+                {/* Border effect */}
+                <div className="absolute inset-0 border border-white/20 rounded-2xl group-hover:border-white/40 transition-colors duration-500" />
+                
+                {/* Shine effect */}
+                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12" />
+
+                <div className="absolute inset-0 flex items-end justify-start p-4 text-left bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                  <span className="text-white font-extrabold text-sm md:text-base drop-shadow-lg leading-snug tracking-wide group-hover:text-[#58b09c] transition-colors duration-300">
+                    Tüm <br/>Kategoriler
                   </span>
                 </div>
               </button>
@@ -105,14 +113,22 @@ export default function LandingPage({ products, profile, sections }: { products?
                 <button 
                   key={sec.id}
                   onClick={() => handleCategoryClick(sec.id)}
-                  className={`relative group w-32 h-20 md:w-40 md:h-24 rounded-xl overflow-hidden shadow-xl transition-transform duration-300 hover:scale-105 hover:z-20 ${selectedSectionId === sec.id ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0b2545]' : ''}`}
+                  className={`relative group w-36 h-24 md:w-44 md:h-28 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-105 hover:z-20 hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.5)] ${selectedSectionId === sec.id ? 'ring-2 ring-[#58b09c] ring-offset-2 ring-offset-[#0b2545] shadow-[0_0_20px_rgba(88,176,156,0.4)]' : 'shadow-xl'}`}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-300 ${selectedSectionId === sec.id ? 'from-[#58b09c] to-[#3a7567] opacity-90' : 'from-slate-800 to-slate-900 opacity-60 group-hover:opacity-80'}`} />
-                  {/* Subtle placeholder image effect behind gradient */}
-                  <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] opacity-20" />
+                  {/* Background Base */}
+                  <div className={`absolute inset-0 bg-gradient-to-br transition-opacity duration-500 ${selectedSectionId === sec.id ? 'from-[#58b09c] to-[#1f4a40] opacity-100' : 'from-slate-700/80 to-slate-900/90 backdrop-blur-md opacity-80 group-hover:opacity-100'}`} />
                   
-                  <div className="absolute inset-0 flex items-center justify-center p-3 text-center">
-                    <span className="text-white font-bold text-sm md:text-base drop-shadow-md leading-tight">
+                  {/* Subtle Pattern */}
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay group-hover:opacity-20 transition-opacity duration-500" />
+                  
+                  {/* Border effect */}
+                  <div className="absolute inset-0 border border-white/20 rounded-2xl group-hover:border-white/40 transition-colors duration-500" />
+                  
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12" />
+
+                  <div className="absolute inset-0 flex items-end justify-start p-4 text-left bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                    <span className="text-white font-extrabold text-sm md:text-base drop-shadow-lg leading-snug tracking-wide group-hover:text-[#58b09c] transition-colors duration-300">
                       {sec.title}
                     </span>
                   </div>

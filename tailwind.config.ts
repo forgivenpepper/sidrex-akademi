@@ -19,6 +19,14 @@ const config: Config = {
           700: '#003d99',
         }
       },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%) skewX(12deg)' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 2s infinite',
+      },
     },
   },
   plugins: [],
