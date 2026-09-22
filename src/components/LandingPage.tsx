@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { PlayCircle, ShieldCheck, HelpCircle, ArrowRight, User } from 'lucide-react';
 import VideoModal from './VideoModal';
 import Header from './Header';
-import { Profile } from '@/lib/types/database';
+import { Profile, SiteSettings } from '@/lib/types/database';
 
-export default function LandingPage({ products, profile, sections }: { products?: any[], profile?: Profile | null, sections?: any[] }) {
+export default function LandingPage({ products, profile, sections, settings }: { products?: any[], profile?: Profile | null, sections?: any[], settings?: SiteSettings | null }) {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
   const productsRef = useRef<HTMLDivElement>(null);
@@ -72,8 +72,8 @@ export default function LandingPage({ products, profile, sections }: { products?
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/hero_bg.png"
-            alt="Sidrex Akademi"
+            src={settings?.hero_bg_image || "/images/hero_bg.png"}
+            alt={settings?.hero_title || "Sidrex Akademi"}
             fill
             className="object-cover"
             priority
@@ -82,9 +82,14 @@ export default function LandingPage({ products, profile, sections }: { products?
         </div>
         
         <div className="relative z-10 text-center max-w-5xl mx-auto px-4 mt-16">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-xl">
-            Sidrex<br />Akademi
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight drop-shadow-xl whitespace-pre-line">
+            {settings?.hero_title || "Sidrex\nAkademi"}
           </h1>
+          {settings?.hero_subtitle && (
+            <p className="text-xl text-white/80 font-medium mb-8 drop-shadow-md">
+              {settings.hero_subtitle}
+            </p>
+          )}
           
           {/* Categories in Hero - Minimal Glassmorphism Boxes */}
           {sections && sections.length > 0 && (
@@ -128,16 +133,20 @@ export default function LandingPage({ products, profile, sections }: { products?
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0b2545] mb-4 tracking-tight leading-tight">
-                Hızlı Başlangıç & <br /> Panel Oryantasyonu
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0b2545] mb-4 tracking-tight leading-tight whitespace-pre-line">
+                {settings?.quick_start_title || "Hızlı Başlangıç & \n Panel Oryantasyonu"}
               </h2>
-              <p className="text-slate-600 mb-8 text-lg leading-relaxed">
-                Bu bölüm, tarafımıza ileten içeriklerin (video, görseller) sistemine pratik, 
-                platformun en iyi şekilde kullanılmasını sağlar.
+              <p className="text-slate-600 mb-8 text-lg leading-relaxed whitespace-pre-line">
+                {settings?.quick_start_desc || "Bu bölüm, tarafımıza ileten içeriklerin (video, görseller) sistemine pratik, platformun en iyi şekilde kullanılmasını sağlar."}
               </p>
               
               {/* Video Thumbnail Placeholder */}
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group cursor-pointer aspect-video bg-gradient-to-br from-slate-200 to-slate-300">
+              <a 
+                href={settings?.quick_start_video_url || "#"} 
+                target={settings?.quick_start_video_url ? "_blank" : "_self"}
+                rel="noreferrer"
+                className="block relative rounded-2xl overflow-hidden shadow-2xl group cursor-pointer aspect-video bg-gradient-to-br from-slate-200 to-slate-300"
+              >
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-all duration-300">
                   <PlayCircle className="w-16 h-16 text-white drop-shadow-lg opacity-90 group-hover:scale-110 transition-transform duration-300" />
                 </div>
@@ -145,7 +154,7 @@ export default function LandingPage({ products, profile, sections }: { products?
                   <h3 className="font-bold text-xl drop-shadow-md">GLOBAL ACADEMY</h3>
                   <p className="text-sm opacity-90 font-medium drop-shadow-md">FUTURE OF LEARNING</p>
                 </div>
-              </div>
+              </a>
             </div>
 
             {/* Right */}

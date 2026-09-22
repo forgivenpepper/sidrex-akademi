@@ -2,6 +2,18 @@ export type UserRole = 'admin' | 'customer';
 
 export type VideoType = 'embed' | 'upload' | 'youtube' | 'link';
 
+export interface SiteSettings {
+  id: number;
+  hero_title: string;
+  hero_subtitle: string;
+  hero_bg_image: string | null;
+  quick_start_title: string;
+  quick_start_desc: string;
+  quick_start_video_url: string | null;
+  updated_at: string;
+}
+
+
 export interface Profile {
   id: string;
   email: string;

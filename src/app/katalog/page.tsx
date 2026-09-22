@@ -34,11 +34,18 @@ export default async function KatalogPage() {
     .eq('is_published', true)
     .order('created_at', { ascending: false });
 
+  const { data: settings } = await supabase
+    .from('site_settings')
+    .select('*')
+    .eq('id', 1)
+    .single();
+
   return (
     <LandingPage
       products={products || []}
       sections={sections || []}
       profile={profile}
+      settings={settings}
     />
   );
 }
