@@ -54,12 +54,49 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       }
     };
 
+    // TABLET & LAPTOP SCREENSHOT SUPPORT (Instant Overlay)
+    let isRightClicking = false;
+
+    const handleContextMenu = () => {
+      isRightClicking = true;
+      setTimeout(() => { isRightClicking = false; }, 200);
+    };
+
+    const handleBlur = (e: FocusEvent) => {
+      if (e.target !== window) return; // Ignore clicks inside modal
+      
+      requestAnimationFrame(() => {
+        if (isRightClicking) return; // Ignore right-click blurs
+        if (!document.hasFocus()) {
+          showOverlay();
+        }
+      });
+    };
+
+    const handleFocus = (e: FocusEvent) => {
+      if (e.target !== window) return;
+      hideOverlay(4000);
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) showOverlay();
+      else hideOverlay(500);
+    };
+
     // Use capture:true so we fire BEFORE browser/OS handles the event
     window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('blur', handleBlur, true);
+    window.addEventListener('focus', handleFocus, true);
+    window.addEventListener('contextmenu', handleContextMenu, true);
+    document.addEventListener('visibilitychange', handleVisibility, true);
 
     return () => {
       clearTimeout(hideTimer);
       window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('blur', handleBlur, true);
+      window.removeEventListener('focus', handleFocus, true);
+      window.removeEventListener('contextmenu', handleContextMenu, true);
+      document.removeEventListener('visibilitychange', handleVisibility, true);
     };
   }, [onClose]);
 
