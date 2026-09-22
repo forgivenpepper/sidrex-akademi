@@ -108,17 +108,17 @@ export async function middleware(request: NextRequest) {
 
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
-  // If user is not logged in and not on auth page, redirect to login
-  if (!user && !isAuthPage) {
+  // If user is not logged in and not on auth page, redirect to login (except root page which is public)
+  if (!user && !isAuthPage && pathname !== '/') {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // If user is logged in and trying to access auth page, redirect to home
+  // If user is logged in and trying to access auth page, redirect to katalog
   if (user && isAuthPage) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = '/katalog';
     return NextResponse.redirect(url);
   }
 

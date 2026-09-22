@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import CustomerShowcase from '@/components/CustomerShowcase';
+import LandingPage from '@/components/LandingPage';
 import { redirect } from 'next/navigation';
 
 export default async function KatalogPage() {
@@ -35,9 +35,8 @@ export default async function KatalogPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <CustomerShowcase
+    <LandingPage
       products={products || []}
-      sections={sections || []}
       profile={profile}
     />
   );
