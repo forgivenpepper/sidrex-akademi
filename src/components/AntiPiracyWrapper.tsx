@@ -38,18 +38,7 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       }
     }, 5000);
 
-    // 2. Screenshot & Snipping Tool Prevention (Keyboard)
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
-      const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
-      
-      // We block immediately if they even press Meta/Win + Shift to be safe, or PrintScreen
-      if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen' || (e.metaKey && e.shiftKey)) {
-        e.preventDefault(); 
-        setIsScreenshotting(true);
-        setTimeout(() => setIsScreenshotting(false), 4000);
-      }
-    };
+    // (Screenshot prevention moved down)
 
     // 3. Block all right-clicks on the page while video is open
     const blockContextMenu = (e: MouseEvent) => {
@@ -75,10 +64,44 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     }
 
     // Use capture phase (true) to intercept before any other script/browser defaults
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Screenshot shortcuts
+      const isMacScreenshot = e.metaKey && e.shiftKey && ['s', '3', '4', '5'].includes(e.key.toLowerCase());
+      const isWinScreenshot = (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') || e.key === 'PrintScreen';
+      
+      // 2. DevTools & Source Code shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Cmd+Opt+I, Cmd+Opt+U)
+      const isDevTools = 
+        e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase())) ||
+        (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+        (e.metaKey && e.altKey && ['i', 'j', 'u'].includes(e.key.toLowerCase())) ||
+        (e.metaKey && e.key.toLowerCase() === 'u');
+
+      if (isMacScreenshot || isWinScreenshot || e.key === 'PrintScreen' || (e.metaKey && e.shiftKey) || isDevTools) {
+        e.preventDefault(); 
+        if (!isDevTools) {
+          setIsScreenshotting(true);
+          setTimeout(() => setIsScreenshotting(false), 4000);
+        }
+      }
+    };
+    
     window.addEventListener('keydown', handleKeyDown, true);
+
+    // ANTI-DEBUGGING TRAP: Freeze DevTools if opened manually from browser menu
+    const debuggerInterval = setInterval(() => {
+      const start = performance.now();
+      debugger; // If DevTools is open, execution STOPS here immediately
+      const end = performance.now();
+      // If it took more than 100ms, it means DevTools paused it!
+      if (end - start > 100) {
+        setIsScreenshotting(true); // Black out screen if they try to debug
+      }
+    }, 1000);
 
     return () => {
       clearInterval(interval);
+      clearInterval(debuggerInterval);
       window.removeEventListener('keydown', handleKeyDown, true);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
