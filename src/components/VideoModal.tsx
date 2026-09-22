@@ -130,6 +130,8 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       return (
         <video
           controls
+          controlsList="nodownload"
+          onContextMenu={(e) => e.preventDefault()}
           autoPlay
           playsInline
           className="w-full h-full object-cover rounded-2xl"
