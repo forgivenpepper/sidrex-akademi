@@ -88,23 +88,34 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     
     window.addEventListener('keydown', handleKeyDown, true);
 
-    // ANTI-DEBUGGING TRAP: Freeze DevTools if opened manually from browser menu
-    // Use Function constructor to prevent Next.js/SWC minifier from stripping the debugger keyword
-    const debuggerInterval = setInterval(() => {
+    // MULTI-LAYER DEVTOOLS DETECTION TRAP
+    const devToolsCheck = setInterval(() => {
+      let devToolsOpen = false;
+
+      // 1. Window size check (detects docked DevTools)
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) {
+        devToolsOpen = true;
+      }
+
+      // 2. Debugger execution time check (detects undocked DevTools if breakpoints are active)
       const start = performance.now();
-      try {
-        (function() { return Function('debugger')(); })();
-      } catch (e) {}
+      // Literal debugger statement - no eval() so CSP won't block it
+      debugger; 
       const end = performance.now();
-      // If it took more than 100ms, it means DevTools paused it!
       if (end - start > 100) {
-        setIsScreenshotting(true); // Black out screen and unmount DOM
+        devToolsOpen = true;
+      }
+
+      if (devToolsOpen) {
+        setIsScreenshotting(true); // Unmount video DOM
       }
     }, 1000);
 
     return () => {
       clearInterval(interval);
-      clearInterval(debuggerInterval);
+      clearInterval(devToolsCheck);
       window.removeEventListener('keydown', handleKeyDown, true);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
