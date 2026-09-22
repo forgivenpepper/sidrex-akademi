@@ -15,9 +15,26 @@ export default async function HomePage() {
 
   const { data: products } = await supabase
     .from('products')
-    .select('*, sections(id, title), product_videos(*)')
+    .select('*, sections(id, title)')
     .eq('is_published', true)
     .order('created_at', { ascending: false });
+
+  // Güvenli video çekimi (Tablo henüz oluşturulmamışsa ana sorguyu bozmamak için)
+  let allVideos: any[] = [];
+  try {
+    const { data: vids, error: vidsError } = await supabase.from('product_videos').select('*');
+    if (!vidsError && vids) {
+      allVideos = vids;
+    }
+  } catch (e) {
+    console.log('product_videos table might not exist yet');
+  }
+
+  // Videoları ürünlere eşleştir
+  const productsWithVideos = products?.map(p => ({
+    ...p,
+    product_videos: allVideos.filter(v => v.product_id === p.id).sort((a, b) => a.sort_order - b.sort_order)
+  }));
 
   const { data: settings } = await supabase
     .from('site_settings')
@@ -25,5 +42,5 @@ export default async function HomePage() {
     .eq('id', 1)
     .single();
 
-  return <LandingPage products={products || []} sections={sections || []} settings={settings} />;
+  return <LandingPage products={productsWithVideos || []} sections={sections || []} settings={settings} />;
 }

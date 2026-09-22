@@ -13,12 +13,22 @@ export default async function EditProductPage({
 
   const { data: product } = await supabase
     .from('products')
-    .select('*, product_videos(*)')
+    .select('*')
     .eq('id', params.id)
     .single();
 
   if (!product) {
     notFound();
+  }
+
+  try {
+    const { data: vids } = await supabase.from('product_videos').select('*').eq('product_id', product.id).order('sort_order', { ascending: true });
+    if (vids) {
+      product.product_videos = vids;
+    }
+  } catch (e) {
+    console.log('product_videos table might not exist yet');
+    product.product_videos = [];
   }
 
   const { data: sections } = await supabase
