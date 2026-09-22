@@ -99,7 +99,24 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
         {children}
       </div>
 
-      {/* Dynamic Anti-Piracy Watermark Overlay */}
+      {/* FORENSIC HIDDEN WATERMARK (Almost invisible, repeating grid) */}
+      {email && (
+        <div 
+          className="absolute inset-0 z-10 pointer-events-none select-none overflow-hidden"
+          style={{ opacity: 0.03, mixBlendMode: 'overlay' }} 
+        >
+          {/* Create a dense grid of the user's email rotated - hidden from plain sight but retrievable via contrast tweaks */}
+          <div className="w-[200%] h-[200%] -ml-[50%] -mt-[50%] flex flex-wrap gap-8 transform -rotate-12 justify-center items-center">
+            {Array.from({ length: 150 }).map((_, i) => (
+              <span key={i} className="text-white text-[10px] sm:text-xs font-mono font-bold whitespace-nowrap">
+                {email} • SIDREX
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic Anti-Piracy Watermark Overlay (The visible moving one) */}
       <div 
         className="absolute z-10 pointer-events-none transition-all duration-1000 ease-in-out select-none flex flex-col items-center justify-center opacity-50"
         style={{ 
