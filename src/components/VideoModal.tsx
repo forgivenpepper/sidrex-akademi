@@ -23,14 +23,19 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     const showOverlay = () => {
       clearTimeout(hideTimer);
       if (overlay) {
-        overlay.style.display = 'flex';
+        // GPU-composited opacity change = instant, no layout recalc
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'all';
       }
     };
 
     const hideOverlay = (delay = 3000) => {
       clearTimeout(hideTimer);
       hideTimer = setTimeout(() => {
-        if (overlay) overlay.style.display = 'none';
+        if (overlay) {
+          overlay.style.opacity = '0';
+          overlay.style.pointerEvents = 'none';
+        }
       }, delay);
     };
 
@@ -182,10 +187,10 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md overflow-y-auto animate-fade-in select-none"
       onContextMenu={(e) => e.preventDefault()}
     >
-      {/* SCREENSHOT WARNING OVERLAY — covers 100% of screen, hidden by default, shown instantly via DOM */}
+      {/* SCREENSHOT WARNING OVERLAY — always in DOM (GPU layer), toggled via opacity for instant response */}
       <div
         ref={ssOverlayRef}
-        style={{ display: 'none' }}
+        style={{ opacity: 0, pointerEvents: 'none', transition: 'opacity 0ms' }}
         className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center text-center p-8"
       >
         <div className="text-red-500 text-5xl md:text-7xl font-black mb-6 animate-pulse">⛔</div>
