@@ -2,7 +2,7 @@
 
 import { Product } from '@/lib/types/database';
 import { X, Mail, Video, Info } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import AntiPiracyWrapper from './AntiPiracyWrapper';
 
 interface VideoModalProps {
@@ -11,12 +11,67 @@ interface VideoModalProps {
 }
 
 export default function VideoModal({ product, onClose }: VideoModalProps) {
+  // Direct DOM ref - No React state delay, this is INSTANT
+  const ssOverlayRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const overlay = ssOverlayRef.current;
+    if (!overlay) return;
+
+    let hideTimer: ReturnType<typeof setTimeout>;
+
+    const showOverlay = () => {
+      clearTimeout(hideTimer);
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    const hideOverlay = (delay = 3000) => {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        if (overlay) overlay.style.display = 'none';
+      }, delay);
+    };
+
+    // Block keyboard screenshot shortcuts IMMEDIATELY (capture phase)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return; }
+
+      const isPrintScreen = e.key === 'PrintScreen';
+      const isWinSnip = e.metaKey && e.shiftKey; // Win+Shift+S and similar
+      const isMacSnip = e.metaKey && e.shiftKey; // Cmd+Shift+3/4/5
+
+      if (isPrintScreen || isWinSnip || isMacSnip) {
+        e.preventDefault();
+        showOverlay();
+        hideOverlay(3000);
+      }
+    };
+
+    // When window loses focus (Alt+Tab, opening Snipping Tool, etc.)
+    const handleBlur = () => { showOverlay(); };
+    const handleFocus = () => { hideOverlay(500); };
+
+    // When tab becomes hidden
+    const handleVisibility = () => {
+      if (document.hidden) showOverlay();
+      else hideOverlay(500);
+    };
+
+    // Use capture:true so we fire BEFORE browser/OS handles the event
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('blur', handleBlur, true);
+    window.addEventListener('focus', handleFocus, true);
+    document.addEventListener('visibilitychange', handleVisibility, true);
+
+    return () => {
+      clearTimeout(hideTimer);
+      window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('blur', handleBlur, true);
+      window.removeEventListener('focus', handleFocus, true);
+      document.removeEventListener('visibilitychange', handleVisibility, true);
+    };
   }, [onClose]);
 
   if (!product) return null;
@@ -127,6 +182,18 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md overflow-y-auto animate-fade-in select-none"
       onContextMenu={(e) => e.preventDefault()}
     >
+      {/* SCREENSHOT WARNING OVERLAY — covers 100% of screen, hidden by default, shown instantly via DOM */}
+      <div
+        ref={ssOverlayRef}
+        style={{ display: 'none' }}
+        className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center text-center p-8"
+      >
+        <div className="text-red-500 text-5xl md:text-7xl font-black mb-6 animate-pulse">⛔</div>
+        <p className="text-red-400 text-2xl md:text-4xl font-black tracking-widest mb-4">EKRAN GÖRÜNTÜSÜ YASAKTIR</p>
+        <p className="text-white text-base md:text-xl font-semibold mb-2">Bu içerik telif hakları ile korunmaktadır.</p>
+        <p className="text-gray-400 text-sm">İzinsiz paylaşım yasal işleme tabidir.</p>
+      </div>
+
       <div className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-[#edf7f3]/50">
