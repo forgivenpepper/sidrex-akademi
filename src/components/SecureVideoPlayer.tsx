@@ -38,11 +38,14 @@ export default function SecureVideoPlayer({ productId, userEmail }: SecureVideoP
   return (
     <AntiPiracyWrapper userEmail={userEmail}>
       {tokenUrl ? (
-        <iframe
+        <video
           src={tokenUrl}
-          allow="autoplay; fullscreen"
-          allowFullScreen
-          className="w-full h-full min-h-[450px] rounded-xl border-0"
+          controls
+          controlsList="nodownload"
+          onContextMenu={(e) => e.preventDefault()}
+          disablePictureInPicture
+          autoPlay
+          className="w-full h-auto max-h-[70vh] mx-auto"
           style={{ pointerEvents: 'auto' }}
         />
       ) : (
