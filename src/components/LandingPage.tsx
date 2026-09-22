@@ -247,7 +247,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
       <section ref={productsRef} className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           
-          {selectedSectionId === 'all' && sections && sections.length > 0 ? (
+          {sections && sections.length > 0 ? (
             <div className="space-y-16">
               <div className="mb-8 border-b border-slate-200 pb-6">
                 <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight font-fraunces">Tüm Ürünler</h2>
@@ -369,106 +369,9 @@ export default function LandingPage({ products, profile, sections, settings }: {
               })}
             </div>
           ) : (
-            <>
-              <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-6">
-                <div className="max-w-2xl">
-                  <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight font-fraunces">
-                    {selectedSectionId === 'all' ? 'Tüm Ürünler' : sections?.find(s => s.id === selectedSectionId)?.title}
-                  </h2>
-                  <p className="text-slate-500 font-light">
-                    Bu alanda ürünlerin uygulanması ve kullanım detaylarına ulaşabilirsiniz.
-                  </p>
-                </div>
-                <div className="mt-4 md:mt-0">
-                  <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-4 py-2 rounded-full">
-                    {finalItems.length} İçerik
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {finalItems.map((product, idx) => {
-                  const title = product.title || product.name;
-                  const desc = product.description || 'Bu ürün hakkında detaylı bilgi bulunmamaktadır.';
-                  const image = product.thumbnail_url || product.image_url || '/images/product_placeholder.png';
-                  
-                  return (
-                    <div key={idx} className="group cursor-pointer" onClick={() => setSelectedProduct({
-                      id: product.id || String(idx),
-                      title: title,
-                      description: desc,
-                      image_url: image,
-                      video_url: product.video_url
-                    })}>
-                      <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-[#e8eceb]">
-                        <img 
-                          src={image}
-                          alt={title}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        {product.video_url && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-all duration-300">
-                            <PlayCircle className="w-12 h-12 text-white drop-shadow-md opacity-90 group-hover:scale-110 transition-transform duration-300" />
-                          </div>
-                        )}
-                      </div>
-                      <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1 font-fraunces">{title}</h4>
-                      <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
-                      <div className="flex gap-2">
-                        <button className="flex-1 bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center">
-                          İncele
-                        </button>
-                        {product.product_videos && product.product_videos.length > 0 && (
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveSliderId(activeSliderId === product.id ? null : product.id);
-                            }}
-                            className="flex-1 bg-white border border-[#0b2545] text-[#0b2545] hover:bg-slate-50 text-xs font-semibold py-2 px-3 rounded-full transition-colors text-center whitespace-nowrap flex items-center justify-center gap-1"
-                          >
-                            <PlayCircle className="w-3 h-3" />
-                            Videolar ({product.product_videos.length})
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Inline Video Slider */}
-                      {activeSliderId === product.id && product.product_videos && product.product_videos.length > 0 && (
-                        <div 
-                          className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {product.product_videos.map((vid: any) => (
-                            <div 
-                              key={vid.id} 
-                              onClick={() => setSelectedProduct({
-                                id: product.id,
-                                title: vid.title,
-                                description: product.description || '',
-                                image_url: vid.thumbnail_url || image,
-                                video_url: vid.video_url
-                              })}
-                              className="shrink-0 w-24 h-16 bg-slate-900 rounded-lg cursor-pointer overflow-hidden relative group border border-slate-200"
-                            >
-                              {vid.thumbnail_url ? (
-                                <img src={vid.thumbnail_url} alt={vid.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-500">
-                                  <PlayCircle className="w-6 h-6" />
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                <span className="text-white text-[9px] font-bold text-center px-1 truncate w-full shadow-sm">{vid.title}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </>
+            <div className="text-center py-20 text-slate-500">
+              <p>Henüz herhangi bir ürün veya kategori bulunmamaktadır.</p>
+            </div>
           )}
         </div>
       </section>
