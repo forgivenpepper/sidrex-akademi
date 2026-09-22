@@ -19,6 +19,10 @@ const config: Config = {
           700: '#003d99',
         }
       },
+      fontFamily: {
+        poppins: ['var(--font-poppins)', 'sans-serif'],
+        fraunces: ['var(--font-fraunces)', 'serif'],
+      },
       keyframes: {
         shimmer: {
           '100%': { transform: 'translateX(100%) skewX(12deg)' },

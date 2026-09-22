@@ -92,7 +92,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
         </div>
         
         <div className="relative z-10 text-center max-w-5xl mx-auto px-4 mt-16">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight drop-shadow-xl whitespace-pre-line">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight drop-shadow-xl whitespace-pre-line font-fraunces">
             {settings?.hero_title || "Sidrex\nAkademi"}
           </h1>
           {settings?.hero_subtitle && (
@@ -143,7 +143,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0b2545] mb-4 tracking-tight leading-tight whitespace-pre-line">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0b2545] mb-4 tracking-tight leading-tight whitespace-pre-line font-fraunces">
                 {settings?.quick_start_title || "Hızlı Başlangıç & \n Panel Oryantasyonu"}
               </h2>
               <p className="text-slate-600 mb-8 text-lg leading-relaxed whitespace-pre-line">
@@ -161,8 +161,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
                   <PlayCircle className="w-16 h-16 text-white drop-shadow-lg opacity-90 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 text-white">
-                  <h3 className="font-bold text-xl drop-shadow-md">GLOBAL ACADEMY</h3>
-                  <p className="text-sm opacity-90 font-medium drop-shadow-md">FUTURE OF LEARNING</p>
+                  <h3 className="font-bold text-xl drop-shadow-md font-fraunces">GLOBAL ACADEMY</h3>
+                  <p className="text-sm opacity-90 font-medium drop-shadow-md font-poppins">FUTURE OF LEARNING</p>
                 </div>
               </a>
             </div>
@@ -175,8 +175,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
                   1
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#0b2545] text-lg mb-2">Nasıl Üye Olunur?</h4>
-                  <p className="text-slate-600 mb-3 text-sm leading-relaxed">
+                  <h4 className="font-bold text-[#0b2545] text-lg mb-2 font-fraunces">Nasıl Üye Olunur?</h4>
+                  <p className="text-slate-600 mb-3 text-sm leading-relaxed font-light">
                     Sisteme kayıt olma şartlarını inceleyin. <span className="font-semibold text-[#58b09c]">Kayıt ol butonuna</span> tıklayarak formu doldurun.
                   </p>
                   <Link href="/register">
@@ -193,8 +193,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
                   2
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#0b2545] text-lg mb-2">Panel Nasıl Kullanılır?</h4>
-                  <p className="text-slate-600 mb-3 text-sm leading-relaxed">
+                  <h4 className="font-bold text-[#0b2545] text-lg mb-2 font-fraunces">Panel Nasıl Kullanılır?</h4>
+                  <p className="text-slate-600 mb-3 text-sm leading-relaxed font-light">
                     Özel firma kodunuzla, size tanınan fırsatlarla ürünleri öğrenmeye başlayın.
                   </p>
                   <Link href="/login">
@@ -216,8 +216,8 @@ export default function LandingPage({ products, profile, sections, settings }: {
           {selectedSectionId === 'all' && sections && sections.length > 0 ? (
             <div className="space-y-16">
               <div className="mb-8 border-b border-slate-200 pb-6">
-                <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">Tüm Ürünler</h2>
-                <p className="text-slate-500">
+                <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight font-fraunces">Tüm Ürünler</h2>
+                <p className="text-slate-500 font-light">
                   Aşağıda tüm ürünlerimizi kategorilerine göre sıralanmış şekilde inceleyebilirsiniz.
                 </p>
               </div>
@@ -231,7 +231,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-2.5 h-6 rounded-full bg-[#58b09c]" />
-                        <h3 className="text-2xl font-bold text-[#0b2545] tracking-tight">{sec.title}</h3>
+                        <h3 className="text-2xl font-bold text-[#0b2545] tracking-tight font-fraunces">{sec.title}</h3>
                       </div>
                       <span className="text-xs font-bold text-slate-500 bg-[#edf7f3] border border-[#d1eae1] px-3 py-1 rounded-full">
                         {secItems.length} Ürün
@@ -265,7 +265,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                                 </div>
                               )}
                             </div>
-                            <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
+                            <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1 font-fraunces">{title}</h4>
                             <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
                             <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
                               İncele
@@ -282,10 +282,10 @@ export default function LandingPage({ products, profile, sections, settings }: {
             <>
               <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-6">
                 <div className="max-w-2xl">
-                  <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight">
+                  <h2 className="text-3xl font-extrabold text-[#0b2545] mb-2 tracking-tight font-fraunces">
                     {selectedSectionId === 'all' ? 'Tüm Ürünler' : sections?.find(s => s.id === selectedSectionId)?.title}
                   </h2>
-                  <p className="text-slate-500">
+                  <p className="text-slate-500 font-light">
                     Bu alanda ürünlerin uygulanması ve kullanım detaylarına ulaşabilirsiniz.
                   </p>
                 </div>
@@ -323,7 +323,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
                           </div>
                         )}
                       </div>
-                      <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1">{title}</h4>
+                      <h4 className="font-bold text-[#0b2545] mb-1 line-clamp-1 font-fraunces">{title}</h4>
                       <p className="text-xs text-slate-500 mb-3 min-h-[32px] line-clamp-2">{desc}</p>
                       <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-xs font-semibold py-1.5 px-5 rounded-full transition-colors">
                         İncele
@@ -341,10 +341,10 @@ export default function LandingPage({ products, profile, sections, settings }: {
       <section className="py-20 bg-[#f7f9ec]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-extrabold text-[#0b2545] mb-4 tracking-tight">
+            <h2 className="text-3xl font-extrabold text-[#0b2545] mb-4 tracking-tight font-fraunces">
               Sidrex Ürün Kataloğu <br /> ve Sözleşme Merkezi
             </h2>
-            <p className="text-slate-600 leading-relaxed text-sm">
+            <p className="text-slate-600 leading-relaxed text-sm font-light">
               Bu bölümde, güncel Ürün Kataloğumuzu inceleyebilir, Topluluk İş Birliği metni ve hukuki şartnameleri inceleyebilirsiniz.
             </p>
           </div>
