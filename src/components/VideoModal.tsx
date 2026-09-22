@@ -56,8 +56,17 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
 
     // Window blur — only show overlay if page truly lost OS-level focus
     // requestAnimationFrame ensures we check AFTER the current event is done
+    let isRightClicking = false;
+
+    const handleContextMenu = () => {
+      // Right-click: mark flag so blur handler knows to ignore it
+      isRightClicking = true;
+      setTimeout(() => { isRightClicking = false; }, 200);
+    };
+
     const handleBlur = () => {
       requestAnimationFrame(() => {
+        if (isRightClicking) return; // Ignore blur caused by right-click
         if (!document.hasFocus()) showOverlay();
       });
     };
@@ -74,6 +83,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     window.addEventListener('keydown', handleKeyDown, true);
     window.addEventListener('blur', handleBlur, true);
     window.addEventListener('focus', handleFocus, true);
+    window.addEventListener('contextmenu', handleContextMenu, true);
     document.addEventListener('visibilitychange', handleVisibility, true);
 
     return () => {
@@ -81,6 +91,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       window.removeEventListener('keydown', handleKeyDown, true);
       window.removeEventListener('blur', handleBlur, true);
       window.removeEventListener('focus', handleFocus, true);
+      window.removeEventListener('contextmenu', handleContextMenu, true);
       document.removeEventListener('visibilitychange', handleVisibility, true);
     };
   }, [onClose]);
