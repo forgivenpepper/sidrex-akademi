@@ -1,18 +1,22 @@
 'use client';
 
 import { Product } from '@/lib/types/database';
-import { X, Mail, Video, Info } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { Package, X, Mail, ShieldCheck, PlayCircle, Info, Video } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import AntiPiracyWrapper from './AntiPiracyWrapper';
 
 interface VideoModalProps {
-  product: Product | null;
+  product: any;
   onClose: () => void;
 }
 
 export default function VideoModal({ product, onClose }: VideoModalProps) {
   // Direct DOM ref - No React state delay, this is INSTANT
   const ssOverlayRef = useRef<HTMLDivElement>(null);
+  
+  // Start with the main product video or the first gallery video
+  const initialVidId = product.video_url ? 'main' : (product.product_videos?.[0]?.id || 'none');
+  const [activeVideoId, setActiveVideoId] = useState<string>(initialVidId);
 
   useEffect(() => {
     const overlay = ssOverlayRef.current;
@@ -85,16 +89,12 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
 
     // Use capture:true so we fire BEFORE browser/OS handles the event
     window.addEventListener('keydown', handleKeyDown, true);
-    window.addEventListener('blur', handleBlur, true);
-    window.addEventListener('focus', handleFocus, true);
     window.addEventListener('contextmenu', handleContextMenu, true);
     document.addEventListener('visibilitychange', handleVisibility, true);
 
     return () => {
       clearTimeout(hideTimer);
       window.removeEventListener('keydown', handleKeyDown, true);
-      window.removeEventListener('blur', handleBlur, true);
-      window.removeEventListener('focus', handleFocus, true);
       window.removeEventListener('contextmenu', handleContextMenu, true);
       document.removeEventListener('visibilitychange', handleVisibility, true);
     };
@@ -110,7 +110,23 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
   const mailtoLink = `mailto:info@sidrex.com?subject=${emailSubject}&body=${emailBody}`;
 
   const renderVideoPlayer = () => {
-    if (!product.video_url && !product.storage_video_path) {
+    // Determine which video to play
+    let currentVideoType = product.video_type;
+    let currentVideoUrl = product.video_url;
+    let currentStoragePath = product.storage_video_path;
+    let currentTitle = product.title;
+
+    if (activeVideoId !== 'main' && activeVideoId !== 'none' && product.product_videos) {
+      const selectedGalleryVideo = product.product_videos.find((v: any) => v.id === activeVideoId);
+      if (selectedGalleryVideo) {
+        currentVideoType = selectedGalleryVideo.video_type;
+        currentVideoUrl = selectedGalleryVideo.video_url;
+        currentStoragePath = selectedGalleryVideo.storage_video_path;
+        currentTitle = selectedGalleryVideo.title;
+      }
+    }
+
+    if (!currentVideoUrl && !currentStoragePath) {
       return (
         <div className="w-full h-full flex flex-col items-center justify-center bg-[#edf7f3] rounded-2xl text-[#58b09c] p-8 text-center">
           <Video className="w-12 h-12 mb-3 opacity-80" />
@@ -119,10 +135,10 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       );
     }
 
-    const url = (product.video_url || '').trim();
+    const url = (currentVideoUrl || '').trim();
 
     // 1. Embed iframe raw kodu
-    if (product.video_type === 'embed' && url) {
+    if (currentVideoType === 'embed' && url) {
       return (
         <AntiPiracyWrapper>
           <div
@@ -137,7 +153,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|watch\?.+&v=))([\w-]{11})/) ||
       (url.length === 11 && url.match(/^[\w-]{11}$/) ? [null, url] : null);
 
-    if (product.video_type === 'youtube' || ytMatch) {
+    if (currentVideoType === 'youtube' || ytMatch) {
       const videoId = ytMatch ? ytMatch[1] : null;
       const embedUrl = videoId
         ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
@@ -146,7 +162,7 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
         <AntiPiracyWrapper>
           <iframe
             src={embedUrl}
-            title={product.title}
+            title={currentTitle}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full rounded-2xl"
@@ -156,8 +172,8 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
     }
 
     // 3. Link tipi (MP4, WebM veya herhangi bir doğrudan video linki)
-    if (product.video_type === 'link' || product.video_type === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || product.storage_video_path) {
-      const videoSrc = url || product.storage_video_path || '';
+    if (currentVideoType === 'link' || currentVideoType === 'upload' || url.endsWith('.mp4') || url.endsWith('.webm') || currentStoragePath) {
+      const videoSrc = url || currentStoragePath || '';
       return (
         <AntiPiracyWrapper>
           <video
@@ -288,25 +304,65 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
               </div>
             </div>
 
-            {/* Technical Specs Table / Card */}
+            {/* Video Gallery Side List */}
             <div className="space-y-3">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Info className="w-4 h-4 text-[#58b09c]" />
-                Teknik Künye
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                <PlayCircle className="w-4 h-4 text-[#58b09c]" />
+                Video Galeri
               </h3>
 
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 divide-y divide-slate-200/80 space-y-2">
-                {specsList.length > 0 ? (
-                  specsList.map(([key, value]) => (
-                    <div key={key} className="pt-2 flex justify-between items-center text-xs">
-                      <span className="text-slate-500 font-medium">{key}</span>
-                      <span className="text-[#0b2545] font-bold text-right pl-2">{value}</span>
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300">
+                {product.video_url && (
+                  <div 
+                    onClick={() => setActiveVideoId('main')}
+                    className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer transition-all border ${
+                      activeVideoId === 'main' ? 'bg-white border-[#58b09c] shadow-sm' : 'border-transparent hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="w-16 h-10 bg-slate-900 rounded-lg overflow-hidden shrink-0 flex items-center justify-center relative">
+                      {product.thumbnail_url || product.image_url ? (
+                        <img src={product.thumbnail_url || product.image_url} className="w-full h-full object-cover opacity-80" />
+                      ) : (
+                        <PlayCircle className="w-4 h-4 text-white/50" />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <PlayCircle className="w-5 h-5 text-white drop-shadow-md" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-bold text-[#0b2545] truncate">Ana Video</h4>
+                    </div>
+                  </div>
+                )}
+                
+                {product.product_videos && product.product_videos.length > 0 ? (
+                  product.product_videos.map((vid: any) => (
+                    <div 
+                      key={vid.id}
+                      onClick={() => setActiveVideoId(vid.id)}
+                      className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer transition-all border ${
+                        activeVideoId === vid.id ? 'bg-white border-[#58b09c] shadow-sm' : 'border-transparent hover:bg-slate-100'
+                      }`}
+                    >
+                      <div className="w-16 h-10 bg-slate-900 rounded-lg overflow-hidden shrink-0 flex items-center justify-center relative">
+                        {vid.thumbnail_url ? (
+                          <img src={vid.thumbnail_url} className="w-full h-full object-cover opacity-80" />
+                        ) : (
+                          <PlayCircle className="w-4 h-4 text-white/50" />
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <PlayCircle className="w-5 h-5 text-white drop-shadow-md" />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs font-bold text-[#0b2545] truncate">{vid.title}</h4>
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-slate-400 italic text-center py-2">
-                    Teknik künye bilgisi girilmedi.
-                  </p>
+                  !product.video_url && (
+                    <p className="text-xs text-slate-400 italic text-center py-4">Bu ürüne ait video bulunamadı.</p>
+                  )
                 )}
               </div>
             </div>

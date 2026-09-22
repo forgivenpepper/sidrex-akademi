@@ -13,10 +13,18 @@ CREATE TABLE IF NOT EXISTS product_videos (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- RLS (Row Level Security) ayarları (Genel okuma izni)
+-- RLS (Row Level Security) ayarları
 ALTER TABLE product_videos ENABLE ROW LEVEL SECURITY;
 
+-- Okuma izni (Herkes görebilir)
 CREATE POLICY "Allow public read access on product_videos" 
 ON product_videos FOR SELECT 
 TO anon, authenticated 
 USING (true);
+
+-- Ekleme, Güncelleme, Silme İzinleri (Sadece Giriş Yapmış Adminler için)
+CREATE POLICY "Allow authenticated full access on product_videos" 
+ON product_videos FOR ALL 
+TO authenticated 
+USING (true)
+WITH CHECK (true);
