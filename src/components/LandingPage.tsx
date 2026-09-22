@@ -24,7 +24,7 @@ export default function LandingPage({ products, profile, sections, settings }: {
     ? products
     : [];
 
-  const itemsToRender = displayItems.filter(p => selectedSectionId === 'all' || p.section_id === selectedSectionId);
+  const itemsToRender = displayItems;
     
   const placeholderItems = [
     { name: "Örnek Ürün", description: "Lütfen ürün ekleyin.", image_url: "/images/product_placeholder.png" }
