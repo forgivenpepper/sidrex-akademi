@@ -51,15 +51,6 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
       }
     };
 
-    // 2.5. Blur & Visibility when window loses focus 
-    const handleWindowBlur = () => setIsScreenshotting(true);
-    const handleWindowFocus = () => setIsScreenshotting(false);
-    
-    const handleVisibilityChange = () => {
-      if (document.hidden) setIsScreenshotting(true);
-      else setIsScreenshotting(false);
-    };
-
     // 3. Block all right-clicks on the page while video is open
     const blockContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -85,16 +76,10 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
 
     // Use capture phase (true) to intercept before any other script/browser defaults
     window.addEventListener('keydown', handleKeyDown, true);
-    window.addEventListener('blur', handleWindowBlur, true);
-    window.addEventListener('focus', handleWindowFocus, true);
-    document.addEventListener('visibilitychange', handleVisibilityChange, true);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown, true);
-      window.removeEventListener('blur', handleWindowBlur, true);
-      window.removeEventListener('focus', handleWindowFocus, true);
-      document.removeEventListener('visibilitychange', handleVisibilityChange, true);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
         container.removeEventListener('click', blockNewTab, true);

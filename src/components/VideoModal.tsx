@@ -54,52 +54,12 @@ export default function VideoModal({ product, onClose }: VideoModalProps) {
       }
     };
 
-    // Window blur — only show overlay if page truly lost OS-level focus
-    // requestAnimationFrame ensures we check AFTER the current event is done
-    let isRightClicking = false;
-
-    const handleContextMenu = () => {
-      // Right-click: mark flag so blur handler knows to ignore it
-      isRightClicking = true;
-      setTimeout(() => { isRightClicking = false; }, 200);
-    };
-
-    const handleBlur = (e: FocusEvent) => {
-      // Since we use capture:true, we catch ALL blur events (even clicking a button). 
-      // We ONLY care if the WINDOW itself is blurred.
-      if (e.target !== window) return;
-
-      requestAnimationFrame(() => {
-        if (isRightClicking) return; // Ignore blur caused by right-click
-        if (!document.hasFocus()) showOverlay();
-      });
-    };
-    // When user returns — keep overlay for 4 seconds
-    const handleFocus = (e: FocusEvent) => { 
-      if (e.target !== window) return;
-      hideOverlay(4000); 
-    };
-
-    // When tab becomes hidden
-    const handleVisibility = () => {
-      if (document.hidden) showOverlay();
-      else hideOverlay(500);
-    };
-
     // Use capture:true so we fire BEFORE browser/OS handles the event
     window.addEventListener('keydown', handleKeyDown, true);
-    window.addEventListener('blur', handleBlur, true);
-    window.addEventListener('focus', handleFocus, true);
-    window.addEventListener('contextmenu', handleContextMenu, true);
-    document.addEventListener('visibilitychange', handleVisibility, true);
 
     return () => {
       clearTimeout(hideTimer);
       window.removeEventListener('keydown', handleKeyDown, true);
-      window.removeEventListener('blur', handleBlur, true);
-      window.removeEventListener('focus', handleFocus, true);
-      window.removeEventListener('contextmenu', handleContextMenu, true);
-      document.removeEventListener('visibilitychange', handleVisibility, true);
     };
   }, [onClose]);
 
