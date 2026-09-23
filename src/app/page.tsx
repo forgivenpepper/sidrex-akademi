@@ -6,6 +6,18 @@ export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   const supabase = await createClient();
 
+  // Fetch user and profile
+  const { data: { user } } = await supabase.auth.getUser();
+  let profile = null;
+  if (user) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    profile = data;
+  }
+
   // Fetch active sections
   const { data: sections } = await supabase
     .from('sections')
@@ -42,5 +54,5 @@ export default async function HomePage() {
     .eq('id', 1)
     .single();
 
-  return <LandingPage products={productsWithVideos || []} sections={sections || []} settings={settings} />;
+  return <LandingPage products={productsWithVideos || []} sections={sections || []} settings={settings} profile={profile} />;
 }
