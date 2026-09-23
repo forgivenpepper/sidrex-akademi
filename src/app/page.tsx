@@ -54,5 +54,11 @@ export default async function HomePage() {
     .eq('id', 1)
     .single();
 
-  return <LandingPage products={productsWithVideos || []} sections={sections || []} settings={settings} profile={profile} />;
+  const { data: faqs } = await supabase
+    .from('faqs')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+
+  return <LandingPage products={productsWithVideos || []} sections={sections || []} settings={settings} profile={profile} faqs={faqs || []} />;
 }

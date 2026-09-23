@@ -11,6 +11,10 @@ interface SettingsData {
   quick_start_title: string;
   quick_start_desc: string;
   quick_start_video_url: string | null;
+  register_guide_url?: string | null;
+  panel_guide_url?: string | null;
+  product_catalog_url?: string | null;
+  contract_center_url?: string | null;
 }
 
 export default function SettingsForm({ initialData }: { initialData: SettingsData }) {
@@ -125,6 +129,56 @@ export default function SettingsForm({ initialData }: { initialData: SettingsDat
               type="url"
               name="quick_start_video_url"
               defaultValue={initialData.quick_start_video_url || ''}
+              placeholder="https://..."
+              className="w-full bg-[#090d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-6 pt-6">
+        <h2 className="text-xl font-bold text-white border-b border-white/10 pb-2">Döküman ve Yönlendirme Linkleri</h2>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300">Kayıt Olma Yönergesi URL (PDF/Resim)</label>
+            <input
+              type="url"
+              name="register_guide_url"
+              defaultValue={initialData.register_guide_url || ''}
+              placeholder="https://... (İncele butonuna basınca açılır)"
+              className="w-full bg-[#090d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300">Panel Kullanım Yönergesi URL (PDF/Resim)</label>
+            <input
+              type="url"
+              name="panel_guide_url"
+              defaultValue={initialData.panel_guide_url || ''}
+              placeholder="https://... (İncele butonuna basınca açılır)"
+              className="w-full bg-[#090d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300">Ürün Kataloğu Linki (PDF vs.)</label>
+            <input
+              type="url"
+              name="product_catalog_url"
+              defaultValue={initialData.product_catalog_url || ''}
+              placeholder="https://..."
+              className="w-full bg-[#090d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300">Sözleşme Merkezi Linki (PDF vs.)</label>
+            <input
+              type="url"
+              name="contract_center_url"
+              defaultValue={initialData.contract_center_url || ''}
               placeholder="https://..."
               className="w-full bg-[#090d16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />

@@ -10,7 +10,20 @@ export interface SiteSettings {
   quick_start_title: string;
   quick_start_desc: string;
   quick_start_video_url: string | null;
+  register_guide_url?: string | null;
+  panel_guide_url?: string | null;
+  product_catalog_url?: string | null;
+  contract_center_url?: string | null;
   updated_at: string;
+}
+
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
 }
 
 

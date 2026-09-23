@@ -16,6 +16,10 @@ export async function updateSiteSettings(formData: FormData) {
   const quick_start_title = formData.get('quick_start_title') as string;
   const quick_start_desc = formData.get('quick_start_desc') as string;
   const quick_start_video_url = formData.get('quick_start_video_url') as string;
+  const register_guide_url = formData.get('register_guide_url') as string;
+  const panel_guide_url = formData.get('panel_guide_url') as string;
+  const product_catalog_url = formData.get('product_catalog_url') as string;
+  const contract_center_url = formData.get('contract_center_url') as string;
 
   // Önce tabloyu kontrol et - kayıt var mı?
   const { data: existing } = await supabase
@@ -37,6 +41,10 @@ export async function updateSiteSettings(formData: FormData) {
         quick_start_title,
         quick_start_desc,
         quick_start_video_url: quick_start_video_url || null,
+        register_guide_url: register_guide_url || null,
+        panel_guide_url: panel_guide_url || null,
+        product_catalog_url: product_catalog_url || null,
+        contract_center_url: contract_center_url || null,
         updated_at: new Date().toISOString()
       })
       .eq('id', 1);
@@ -53,6 +61,10 @@ export async function updateSiteSettings(formData: FormData) {
         quick_start_title,
         quick_start_desc,
         quick_start_video_url: quick_start_video_url || null,
+        register_guide_url: register_guide_url || null,
+        panel_guide_url: panel_guide_url || null,
+        product_catalog_url: product_catalog_url || null,
+        contract_center_url: contract_center_url || null,
       });
     error = result.error;
   }

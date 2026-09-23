@@ -5,11 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PlayCircle, ShieldCheck, HelpCircle, ArrowRight, User } from 'lucide-react';
 import VideoModal from './VideoModal';
+import DocumentViewerModal from './DocumentViewerModal';
 import Header from './Header';
-import { Profile, SiteSettings } from '@/lib/types/database';
+import { Profile, SiteSettings, Faq } from '@/lib/types/database';
 
-export default function LandingPage({ products, profile, sections, settings }: { products?: any[], profile?: Profile | null, sections?: any[], settings?: SiteSettings | null }) {
+export default function LandingPage({ products, profile, sections, settings, faqs }: { products?: any[], profile?: Profile | null, sections?: any[], settings?: SiteSettings | null, faqs?: Faq[] }) {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [viewerDocUrl, setViewerDocUrl] = useState<{url: string, title: string} | null>(null);
+  const [openFaqId, setOpenFaqId] = useState<string | null>(null);
   const [selectedSectionId, setSelectedSectionId] = useState<string>('all');
   const [activeSliderId, setActiveSliderId] = useState<string | null>(null);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
@@ -213,11 +216,18 @@ export default function LandingPage({ products, profile, sections, settings }: {
                   <p className="text-slate-600 mb-3 text-sm leading-relaxed font-light">
                     Sisteme kayıt olma şartlarını inceleyin. <span className="font-semibold text-[#58b09c]">Kayıt ol butonuna</span> tıklayarak formu doldurun.
                   </p>
-                  <Link href="/register">
-                    <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-sm font-semibold py-2 px-6 rounded-full transition-colors">
-                      Yönergeyi İncele
-                    </button>
-                  </Link>
+                  <button 
+                    onClick={() => {
+                      if (settings?.register_guide_url) {
+                        setViewerDocUrl({ url: settings.register_guide_url, title: 'Nasıl Üye Olunur?' });
+                      } else {
+                        window.location.href = '/register';
+                      }
+                    }}
+                    className="bg-[#0b2545] hover:bg-[#153661] text-white text-sm font-semibold py-2 px-6 rounded-full transition-colors"
+                  >
+                    Yönergeyi İncele
+                  </button>
                 </div>
               </div>
 
@@ -231,11 +241,18 @@ export default function LandingPage({ products, profile, sections, settings }: {
                   <p className="text-slate-600 mb-3 text-sm leading-relaxed font-light">
                     Özel firma kodunuzla, size tanınan fırsatlarla ürünleri öğrenmeye başlayın.
                   </p>
-                  <Link href="/login">
-                    <button className="bg-[#0b2545] hover:bg-[#153661] text-white text-sm font-semibold py-2 px-6 rounded-full transition-colors">
-                      Yönergeyi İncele
-                    </button>
-                  </Link>
+                  <button 
+                    onClick={() => {
+                      if (settings?.panel_guide_url) {
+                        setViewerDocUrl({ url: settings.panel_guide_url, title: 'Panel Nasıl Kullanılır?' });
+                      } else {
+                        window.location.href = '/login';
+                      }
+                    }}
+                    className="bg-[#0b2545] hover:bg-[#153661] text-white text-sm font-semibold py-2 px-6 rounded-full transition-colors"
+                  >
+                    Yönergeyi İncele
+                  </button>
                 </div>
               </div>
             </div>
@@ -387,7 +404,16 @@ export default function LandingPage({ products, profile, sections, settings }: {
                 <h4 className="font-bold text-[#0b2545] text-sm mb-1">Sidrex Güncel Ürün Kataloğu</h4>
                 <p className="text-xs text-slate-500">Tüm ürün çeşitlerimizi, teknik detayları ve vizyonu yakından tanıyın.</p>
               </div>
-              <button className="bg-white border border-[#58b09c] text-[#58b09c] hover:bg-[#58b09c] hover:text-white text-xs font-semibold py-2 px-4 rounded-full transition-colors whitespace-nowrap ml-4 shadow-sm">
+              <button 
+                onClick={() => {
+                  if (settings?.product_catalog_url) {
+                    setViewerDocUrl({ url: settings.product_catalog_url, title: 'Ürün Kataloğu' });
+                  } else {
+                    alert('Katalog linki henüz eklenmedi.');
+                  }
+                }}
+                className="bg-white border border-[#58b09c] text-[#58b09c] hover:bg-[#58b09c] hover:text-white text-xs font-semibold py-2 px-4 rounded-full transition-colors whitespace-nowrap ml-4 shadow-sm"
+              >
                 Kataloğu İncele
               </button>
             </div>
@@ -397,7 +423,16 @@ export default function LandingPage({ products, profile, sections, settings }: {
                 <h4 className="font-bold text-[#0b2545] text-sm mb-1">Sidrex Topluluk İş Birliği Şartları & Sözleşmesi</h4>
                 <p className="text-xs text-slate-500">Kayıt aşamasında kabul etmeniz gereken resmi sözleşme metnini okuyun.</p>
               </div>
-              <button className="bg-white border border-[#58b09c] text-[#58b09c] hover:bg-[#58b09c] hover:text-white text-xs font-semibold py-2 px-4 rounded-full transition-colors whitespace-nowrap ml-4 shadow-sm">
+              <button 
+                onClick={() => {
+                  if (settings?.contract_center_url) {
+                    setViewerDocUrl({ url: settings.contract_center_url, title: 'Sözleşme Merkezi' });
+                  } else {
+                    alert('Sözleşme linki henüz eklenmedi.');
+                  }
+                }}
+                className="bg-white border border-[#58b09c] text-[#58b09c] hover:bg-[#58b09c] hover:text-white text-xs font-semibold py-2 px-4 rounded-full transition-colors whitespace-nowrap ml-4 shadow-sm"
+              >
                 Sözleşmeyi İncele
               </button>
             </div>
@@ -417,24 +452,31 @@ export default function LandingPage({ products, profile, sections, settings }: {
           </p>
 
           <div className="space-y-4 text-sm">
-            {/* FAQ Item 1 */}
-            <div className="border-b border-slate-300 pb-4">
-              <button className="flex justify-between items-center w-full text-left font-bold text-[#0b2545] group">
-                Sidrex Topluluk'a kimler üye olabilir?
-                <span className="text-xl font-light text-slate-400 group-hover:text-[#58b09c] transition-colors">-</span>
-              </button>
-              <div className="mt-3 text-slate-600 leading-relaxed text-xs pr-8">
-                Sidrex Topluluk (Akademi) platformuna, sağlık profesyonelleri, diyetisyenler, eczacılar, sağlıkla ilgili içerik üretenler (sosyal medya hesapları/sayfa yöneticileri) ve uzman sağlık çalışanları üye olabilir. Kayıt sayfamız üzerinden ilgili evrakları doldurarak başvurunuzu gerçekleştirebilirsiniz.
-              </div>
-            </div>
-
-            {/* FAQ Item 2 */}
-            <div className="border-b border-slate-300 pb-4 pt-2">
-              <button className="flex justify-between items-center w-full text-left font-bold text-[#0b2545] group">
-                Üyelik için herhangi bir ücret ödemem gerekiyor mu?
-                <span className="text-xl font-light text-slate-400 group-hover:text-[#58b09c] transition-colors">+</span>
-              </button>
-            </div>
+            {faqs && faqs.length > 0 ? (
+              faqs.map((faq, index) => {
+                const isOpen = openFaqId === faq.id;
+                return (
+                  <div key={faq.id} className={`border-b border-slate-300 pb-4 ${index !== 0 ? 'pt-2' : ''}`}>
+                    <button 
+                      onClick={() => setOpenFaqId(isOpen ? null : faq.id)}
+                      className="flex justify-between items-center w-full text-left font-bold text-[#0b2545] group"
+                    >
+                      {faq.question}
+                      <span className="text-xl font-light text-slate-400 group-hover:text-[#58b09c] transition-colors">
+                        {isOpen ? '-' : '+'}
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div className="mt-3 text-slate-600 leading-relaxed text-xs pr-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-slate-500 text-sm">Henüz eklenmiş bir soru bulunmamaktadır.</p>
+            )}
           </div>
         </div>
       </section>
@@ -460,6 +502,15 @@ export default function LandingPage({ products, profile, sections, settings }: {
         <VideoModal 
           product={selectedProduct} 
           onClose={() => setSelectedProduct(null)} 
+        />
+      )}
+
+      {/* Document Viewer Modal */}
+      {viewerDocUrl && (
+        <DocumentViewerModal
+          url={viewerDocUrl.url}
+          title={viewerDocUrl.title}
+          onClose={() => setViewerDocUrl(null)}
         />
       )}
     </div>
