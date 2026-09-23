@@ -88,62 +88,9 @@ export default function AntiPiracyWrapper({ children, userEmail: propUserEmail }
     
     window.addEventListener('keydown', handleKeyDown, true);
 
-    // MULTI-LAYER DEVTOOLS DETECTION TRAP
-    const devToolsCheck = setInterval(() => {
-      let devToolsOpen = false;
-
-      // 1. Window size check (detects docked DevTools)
-      // Lowered threshold to 100 to catch smaller DevTools instances on laptops
-      const widthThreshold = window.outerWidth - window.innerWidth > 100;
-      const heightThreshold = window.outerHeight - window.innerHeight > 100;
-      if (widthThreshold || heightThreshold) {
-        devToolsOpen = true;
-      }
-
-      // 2. Debugger execution time check (detects undocked DevTools if breakpoints are active)
-      const start = performance.now();
-      // Literal debugger statement - no eval() so CSP won't block it
-      debugger; 
-      const end = performance.now();
-      if (end - start > 100) {
-        devToolsOpen = true;
-      }
-
-      if (devToolsOpen) {
-        setIsScreenshotting(true); // Unmount video DOM
-      }
-    }, 1000);
-
-    // TABLET & LAPTOP OS-LEVEL SCREENSHOT DETECTION (Snipping Tool, Mobile SS)
-    // These trigger when the OS takes over the screen to take a screenshot
-    const handleBlur = (e: FocusEvent) => {
-      // Only care if the entire browser window loses focus (not just clicking a button inside)
-      if (e.target !== window) return;
-      
-      requestAnimationFrame(() => {
-        if (!document.hasFocus()) {
-          setIsScreenshotting(true);
-          setTimeout(() => setIsScreenshotting(false), 4000);
-        }
-      });
-    };
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        setIsScreenshotting(true);
-        setTimeout(() => setIsScreenshotting(false), 4000);
-      }
-    };
-
-    window.addEventListener('blur', handleBlur, true);
-    document.addEventListener('visibilitychange', handleVisibility, true);
-
     return () => {
       clearInterval(interval);
-      clearInterval(devToolsCheck);
       window.removeEventListener('keydown', handleKeyDown, true);
-      window.removeEventListener('blur', handleBlur, true);
-      document.removeEventListener('visibilitychange', handleVisibility, true);
       if (container) {
         container.removeEventListener('contextmenu', blockContextMenu, true);
         container.removeEventListener('click', blockNewTab, true);
